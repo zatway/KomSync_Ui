@@ -6,7 +6,7 @@ import {
     RevokeTokenRequest,
     TokenResponse,
     RefreshTokenResponse,
-} from '../../../types/dto'
+} from '@/types/dto'
 
 export const authApi = api.injectEndpoints({
     endpoints: (builder) => ({
