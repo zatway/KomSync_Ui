@@ -8,8 +8,6 @@ export {TokenResponse} from './auth/TokenResponse';
 
 //projects
 export {CreateProjectRequest} from './projects/CreateProjectRequest';
-export {GetProjectByIdQuery} from './projects/GetProjectByIdQuery';
-export {DeleteProjectRequest} from './projects/DeleteProjectRequest';
 export {ProjectBriefDto} from './projects/ProjectBriefDto';
 export {ProjectDetailedDto} from './projects/ProjectDetailedDto';
 export {UpdateProjectRequest} from './projects/UpdateProjectRequest';
