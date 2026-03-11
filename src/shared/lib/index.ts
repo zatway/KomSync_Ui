@@ -4,7 +4,6 @@ export * from './api/api';
 export {hasValue} from './utils/hasValue';
 export {defaultize} from './utils/defaultize';
 export {isEmptyObject} from './utils/isEmptyObject';
-export {cn} from './utils/cn';
 export {formatDate} from './utils/formatDate';
 export {errorHandler} from './utils/errorHandler';
 

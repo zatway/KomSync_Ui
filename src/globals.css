@@ -6,6 +6,10 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+    --success: 142 76% 36%;         /* насыщенный зелёный ~ #2f9e44 */
+    --success-foreground: 0 0% 100%;
+    --primary: 221 83% 53%;         /* синий ~ #3b82f6 */
+    --primary-muted: 220 70% 65%;
     --background: oklch(1 0 0);          /* светлый фон ≈ white */
     --foreground: oklch(0.145 0 0);     /* тёмный текст */
 
@@ -15,7 +19,6 @@
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
 
-    --primary: oklch(0.205 0 0);     /* твой брендовый primary, можно поменять */
     --primary-foreground: oklch(0.985 0 0);
 
     --secondary: oklch(0.97 0 0);
@@ -64,6 +67,8 @@
 }
 
 .dark {
+    --success: 142 71% 29%;
+    --primary: 217 91% 60%;
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
 
@@ -73,7 +78,6 @@
     --popover: oklch(0.205 0 0);
     --popover-foreground: oklch(0.985 0 0);
 
-    --primary: oklch(0.87 0.00 0);
     --primary-foreground: oklch(0.205 0 0);
 
     --secondary: oklch(0.269 0 0);
@@ -107,6 +111,10 @@
 }
 
 @theme inline {
+    --color-success-muted: hsl(142 71% 29%);
+    --color-primary-muted: hsl(221 70% 65%);
+    --color-success: hsl(var(--success));
+    --color-success-foreground: hsl(var(--success-foreground));
     --color-background: hsl(var(--background));
     --color-foreground: hsl(var(--foreground));
 

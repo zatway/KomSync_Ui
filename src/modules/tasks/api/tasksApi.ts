@@ -5,7 +5,7 @@ import {
     ChangeTaskStatusCommand,
     TaskDetailedDto,
     TaskShortDto,
-} from '../../../types/dto'
+} from '@/types/dto'
 import {api} from "../../../shared/lib";
 
 export const tasksApi = api.injectEndpoints({

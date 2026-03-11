@@ -1,4 +1,4 @@
-import {UserRole} from "../enams/UserRole.ts";
+import { UserRole } from "@/types/dto";
 
 export interface RegisterRequest {
     fullName: string,
