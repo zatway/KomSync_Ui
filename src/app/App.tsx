@@ -1,11 +1,8 @@
-import {KanbanView} from "@/modules/tasks/ui/KanbanView";
+import {AppRouter} from "@/app/routes/AppRouter";
 
 function App() {
-
     return (
-        <>
-            <KanbanView projectId="твой-project-id" />
-        </>
+        <AppRouter/>
     )
 }
 

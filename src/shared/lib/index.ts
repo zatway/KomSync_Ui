@@ -11,3 +11,6 @@ export {errorHandler} from './utils/errorHandler';
 export {useDebounce} from './hooks/useDebounce';
 export {useClickOutside} from './hooks/useClickOutside';
 export {useInfiniteScroll} from './hooks/useInfiniteScroll';
+
+//localStorageService
+export {authLocalService} from './localStorageService/authLocalService';
