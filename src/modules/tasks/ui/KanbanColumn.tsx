@@ -23,8 +23,7 @@ export function KanbanColumn({
     return (
         <div
             className={cn(
-                "flex flex-col min-w-[340px] max-w-[380px] bg-muted/20 rounded-xl border border-border/30 overflow-hidden shadow-sm",
-                "backdrop-blur-sm"
+                "flex flex-col min-w-[340px] m-h-[400px] h-screen bg-muted/20 rounded-xl border border-border/30 overflow-hidden shadow-sm bg-card:",
             )}
         >
             <ColumnHeader title={title} count={tasks.length} color={color} />

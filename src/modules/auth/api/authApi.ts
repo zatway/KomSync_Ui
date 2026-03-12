@@ -1,12 +1,18 @@
 import { api } from '../../../shared/lib'
-import {
-    LoginRequest,
-    RegisterRequest,
-    RefreshTokenRequest,
-    RevokeTokenRequest,
-    TokenResponse,
-    RefreshTokenResponse,
-} from '../../../types/dto'
+import {TokenResponse} from "@/types/dto/auth/TokenResponse";
+import {LoginRequest} from "@/types/dto/auth/LoginRequest";
+import {RefreshTokenResponse} from "@/types/dto/auth/RefreshTokenResponse";
+import {RevokeTokenRequest} from "@/types/dto/auth/RevokeTokenRequest";
+import {RegisterRequest} from "@/types/dto/auth/RegisterRequest";
+import {RefreshTokenRequest} from "@/types/dto/auth/RefreshTokenRequest";
+// import {
+//     LoginRequest,
+//     RegisterRequest,
+//     RefreshTokenRequest,
+//     RevokeTokenRequest,
+//     TokenResponse,
+//     RefreshTokenResponse,
+// } from '@/types/dto'
 
 export const authApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -16,7 +22,6 @@ export const authApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
-            // После регистрации можно сразу залогинить или ничего не инвалидировать
         }),
 
         login: builder.mutation<TokenResponse, LoginRequest>({

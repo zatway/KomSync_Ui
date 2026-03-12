@@ -1,16 +1,21 @@
-import {
-    CreateTaskRequest,
-    UpdateTaskRequest,
-    AssignUserRequest,
-    ChangeTaskStatusCommand,
-    TaskDetailedDto,
-    TaskShortDto,
-} from '@/types/dto'
+// import {
+//     CreateTaskRequest,
+//     UpdateTaskRequest,
+//     AssignUserRequest,
+//     ChangeTaskStatusCommand,
+//     TaskDetailedDto,
+//     TaskShortDto,
+// } from '@/types/dto'
 import {api} from "../../../shared/lib";
+import {TaskShortDto} from "@/types/dto/tasks/TaskShortDto";
+import {TaskDetailedDto} from "@/types/dto/tasks/TaskDetailedDto";
+import {CreateTaskRequest} from "@/types/dto/tasks/CreateTaskRequest";
+import {UpdateTaskRequest} from "@/types/dto/tasks/UpdateTaskRequest";
+import {AssignUserRequest} from "@/types/dto/tasks/AssignUserRequest";
+import {ChangeTaskStatusCommand} from "@/types/dto/tasks/ChangeTaskStatusCommand";
 
 export const tasksApi = api.injectEndpoints({
     endpoints: (builder) => ({
-
         getTasksByProject: builder.query<TaskShortDto[], string>({
             query: (projectId) => `/tasks/project/${projectId}`,
             providesTags: (result) => [
