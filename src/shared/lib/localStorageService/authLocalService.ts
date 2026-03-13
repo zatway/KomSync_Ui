@@ -1,35 +1,32 @@
 import {UserRole} from "@/types/dto/enums/UserRole";
 import {TokenResponse} from "@/types/dto/auth/TokenResponse";
 import { localStorageCore } from "../storageHelper/localStorageCore";
+import {RefreshTokenResponse} from "@/types/dto/auth/RefreshTokenResponse";
 
-const TOKEN_KEY = 'token';
+const TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
-const USER_ROLE_KEY = 'roles';
-const ALLOW_NODES_KEY = 'allowNodes';
-const EXPIRED_UTC_KEY = 'expiredUtc';
-const SCOPES_KEY = 'scopes';
-const ID = 'id';
+const USER_ROLE_KEY = 'role';
+const TOKEN_EXPIRED_UTC_KEY = 'accessTokenExpiredAt';
+const REFRESH_TOKEN_EXPIRED_UTC_KEY = 'refreshTokenExpiredAt';
+const USER_ID = 'userId';
 
-const keys = [TOKEN_KEY, REFRESH_TOKEN_KEY, USER_ROLE_KEY, ALLOW_NODES_KEY, EXPIRED_UTC_KEY, SCOPES_KEY, ID];
+const keys = [TOKEN_KEY, REFRESH_TOKEN_KEY, USER_ROLE_KEY, TOKEN_EXPIRED_UTC_KEY, REFRESH_TOKEN_EXPIRED_UTC_KEY, USER_ID];
 
 export const authLocalService = {
-    setToken: (token: string): void => {
-        localStorageCore.setItem(TOKEN_KEY, token);
-    },
     getToken: (): string | null => {
         return localStorageCore.getItem<string>(TOKEN_KEY);
-    },
-    setRefreshToken: (refreshToken: string): void => {
-        localStorageCore.setItem(REFRESH_TOKEN_KEY, refreshToken);
     },
     getRefreshToken: (): string | null => {
         return localStorageCore.getItem<string>(REFRESH_TOKEN_KEY);
     },
     getUserId: (): string | null => {
-        return localStorageCore.getItem<string>(ID);
+        return localStorageCore.getItem<string>(USER_ID);
     },
-    getExpiredUtc: (): string | null => {
-        return localStorageCore.getItem<string>(EXPIRED_UTC_KEY);
+    getAccessTokenExpiredUtc: (): string | null => {
+        return localStorageCore.getItem<string>(TOKEN_EXPIRED_UTC_KEY);
+    },
+    getRefreshTokenExpiredUtc: (): string | null => {
+        return localStorageCore.getItem<string>(REFRESH_TOKEN_EXPIRED_UTC_KEY);
     },
     setUserRole: (role: string | UserRole): void => {
         localStorageCore.setItem(USER_ROLE_KEY, role);
@@ -44,6 +41,10 @@ export const authLocalService = {
         Object.entries(identityData).forEach(([key, value]) => {
             localStorageCore.setItem(key, value);
         });
+    },
+    setRefreshData: (refreshData: RefreshTokenResponse) => {
+        localStorageCore.setItem(TOKEN_EXPIRED_UTC_KEY, refreshData.expiredTime);
+        localStorageCore.setItem(REFRESH_TOKEN_KEY, refreshData.refreshToken);
     },
     clearTokenData: (): void => {
         keys.forEach((key) => {

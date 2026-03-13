@@ -1,9 +1,9 @@
-import React from 'react';
+import {RegisterForm} from "@/modules/auth";
 
 const RegisterPage = () => {
     return (
-        <div>
-            
+        <div className="flex min-h-screen items-center justify-center bg-background">
+            <RegisterForm/>
         </div>
     );
 };

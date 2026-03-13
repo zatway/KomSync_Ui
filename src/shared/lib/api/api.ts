@@ -16,6 +16,7 @@ export const api = createApi({
         'Project',
         'Task',
         'TaskComment',
+        'Organization',
         // добавляй свои теги по мере необходимости
     ],
 
