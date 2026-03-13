@@ -1,33 +1,28 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-
-import { usePositions, useDepartments } from "@/modules/organization";
-import { useRegister } from "@/modules/auth/hooks/useRegister";
-import { useRegisterMutation } from "@/modules/auth/api/authApi";
-
-import { Logo } from "@/shared/ui/Logo/Logo";
-import { Label } from "@/shared/ui_shadcn/label";
-import { Input } from "@/shared/ui_shadcn/input";
-import { Button } from "@/shared/ui_shadcn/button";
-
-import { UserRole } from "@/types/dto/enums/UserRole";
+import {useNavigate} from "react-router-dom";
+import {useState} from "react";
+import {useRegister} from "@/modules/auth/hooks/useRegister";
+import {useRegisterMutation} from "@/modules/auth/api/authApi";
+import {Logo} from "@/shared/ui/Logo/Logo";
+import {Label} from "@/shared/ui_shadcn/label";
+import {Input} from "@/shared/ui_shadcn/input";
+import {Button} from "@/shared/ui_shadcn/button";
+import {UserRole} from "@/types/dto/enums/UserRole";
 import {Checkbox} from "@/shared/ui_shadcn/checkbox";
+import DepartmentSelect from "@/modules/organization/components/DepartmentSelect";
+import PositionSelect from "@/modules/organization/components/PositionSelect";
 
 const RegisterForm = () => {
     const navigate = useNavigate();
 
     const [showSuccess, setShowSuccess] = useState(false);
 
-    const [register, { isLoading }] = useRegisterMutation();
+    const [register, {isLoading}] = useRegisterMutation();
 
-    const { data: departments } = useDepartments();
-    const { data: positions } = usePositions();
-
-    const { registerData, onChangeData, validateData, errorValidation } = useRegister();
+    const {registerData, onChangeData, validateData, errorValidation} = useRegister();
 
     const roleMap = new Map<UserRole, string>([
         [UserRole.Admin, "Администратор"],
-        [UserRole.Employee, "Пользователь"],
+        [UserRole.Employee, "Сотрудник"],
         [UserRole.Manager, "Менеджер"],
         [UserRole.ReadOnly, "Наблюдатель"],
     ])
@@ -62,7 +57,7 @@ const RegisterForm = () => {
         <div className="w-full max-w-md rounded-2xl bg-card p-8 shadow-lg border">
 
             <div className="flex justify-center mb-6">
-                <Logo height={70} />
+                <Logo height={70}/>
             </div>
 
             <div className="text-center mb-6">
@@ -74,76 +69,59 @@ const RegisterForm = () => {
                 <div className="grid gap-2">
                     <Label>ФИО</Label>
                     <Input
+                        required
                         value={registerData.fullName}
-                        onChange={(e) => onChangeData({ fullName: e.target.value })}
+                        onChange={(e) => onChangeData({fullName: e.target.value})}
                     />
                 </div>
 
                 <div className="grid gap-2">
                     <Label>Email</Label>
                     <Input
+                        required
                         type="email"
                         value={registerData.email}
-                        onChange={(e) => onChangeData({ email: e.target.value })}
+                        onChange={(e) => onChangeData({email: e.target.value})}
                     />
                 </div>
 
                 <div className="grid gap-2">
                     <Label>Пароль</Label>
                     <Input
+                        required
                         type="password"
                         value={registerData.password}
-                        onChange={(e) => onChangeData({ password: e.target.value })}
+                        onChange={(e) => onChangeData({password: e.target.value})}
                     />
                 </div>
 
                 <div className="grid gap-2">
                     <Label>Повторите пароль</Label>
                     <Input
+                        required
                         type="password"
                         value={registerData.confirmPassword}
-                        onChange={(e) => onChangeData({ confirmPassword: e.target.value })}
+                        onChange={(e) => onChangeData({confirmPassword: e.target.value})}
                     />
                 </div>
 
                 <div className="grid gap-2">
                     <Label>Подразделение</Label>
-                    <select
-                        className="border rounded-md p-2 bg-background"
-                        value={registerData.departmentId ?? ""}
-                        onChange={(e) => onChangeData({ departmentId: e.target.value })}
-                    >
-                        <option value="">Выберите подразделение</option>
-                        {departments?.map((d) => (
-                            <option key={d.id} value={d.id}>
-                                {d.name}
-                            </option>
-                        ))}
-                    </select>
+                    <DepartmentSelect selectedDepartmentId={registerData.departmentId} onChange={v => onChangeData({departmentId: v})}/>
                 </div>
 
                 <div className="grid gap-2">
                     <Label>Должность</Label>
-                    <select
-                        className="border rounded-md p-2 bg-background"
-                        value={registerData.positionId ?? ""}
-                        onChange={(e) => onChangeData({ positionId: e.target.value })}
-                    >
-                        <option value="">Выберите должность</option>
-                        {positions?.map((p) => (
-                            <option key={p.id} value={p.id}>
-                                {p.name}
-                            </option>
-                        ))}
-                    </select>
+                    <PositionSelect selectedPositionId={registerData.positionId} onChange={v => onChangeData({positionId: v})}/>
                 </div>
 
                 <div className="grid gap-2">
                     <Label>Роль</Label>
                     <select
+                        required
                         className="border rounded-md p-2 bg-background"
                         value={registerData.role}
-                        onChange={(e) => onChangeData({ role: e.target.value as UserRole })}
+                        onChange={(e) => onChangeData({role: e.target.value as UserRole})}
                     >
                         {Object.values(UserRole).map((role) => (
                             <option key={role} value={role}>
@@ -155,11 +133,12 @@ const RegisterForm = () => {
 
                 <div className="flex items-center gap-2 mt-2">
                     <Checkbox
+                        required
                         checked={registerData.agree}
-                        onCheckedChange={(v: boolean) => onChangeData({ agree: v })}
+                        onCheckedChange={(v: boolean) => onChangeData({agree: v})}
                     />
                     <span className="text-sm">
-            Я согласен с пользовательским соглашением
+                    Я согласен с пользовательским соглашением
           </span>
                 </div>
 
@@ -176,7 +155,6 @@ const RegisterForm = () => {
                 >
                     {isLoading ? "Регистрация..." : "Зарегистрироваться"}
                 </Button>
-
             </form>
 
             {showSuccess && (

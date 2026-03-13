@@ -29,6 +29,7 @@ export const useRegister = () => {
 
     const onChangeData = (changedData: Partial<RegisterData>) => {
         setRegisterData((prev) => ({ ...prev, ...changedData }));
+        validateData()
     };
 
     const validateData = (): boolean => {
@@ -54,16 +55,6 @@ export const useRegister = () => {
 
         if (registerData.password !== registerData.confirmPassword) {
             setErrorValidation("Пароли не совпадают");
-            return false;
-        }
-
-        if (!registerData.departmentId) {
-            setErrorValidation("Выберите подразделение");
-            return false;
-        }
-
-        if (!registerData.positionId) {
-            setErrorValidation("Выберите должность");
             return false;
         }
 

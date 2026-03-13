@@ -1,10 +1,9 @@
-import {
-    CreateProjectRequest,
-    UpdateProjectRequest,
-    ProjectBriefDto,
-    ProjectDetailedDto,
-} from '../../../types/dto'
+
 import {api} from "../../../shared/lib";
+import {ProjectBriefDto} from "@/types/dto/projects/ProjectBriefDto";
+import {ProjectDetailedDto} from "@/types/dto/projects/ProjectDetailedDto";
+import {CreateProjectRequest} from "@/types/dto/projects/CreateProjectRequest";
+import {UpdateProjectRequest} from "@/types/dto/projects/UpdateProjectRequest";
 
 export const projectsApi = api.injectEndpoints({
     endpoints: (builder) => ({
