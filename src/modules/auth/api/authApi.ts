@@ -50,7 +50,7 @@ export const authApi = api.injectEndpoints({
             },
         }),
 
-        logout: builder.mutation<void, RevokeTokenRequest>({
+        logout: builder.mutation<boolean, {}>({
             query: (body) => ({
                 url: '/auth/logout',
                 method: 'POST',

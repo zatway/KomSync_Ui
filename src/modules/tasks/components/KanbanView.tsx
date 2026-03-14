@@ -1,12 +1,12 @@
 import {closestCenter, DndContext, DragEndEvent} from "@dnd-kit/core"
 import {useChangeTaskStatusMutation, useGetTasksByProjectQuery} from "../api/tasksApi"
-import {KanbanColumn} from "../ui/KanbanColumn"
-import {TaskCard} from "../ui/TaskCard"
 import {ProjectTaskStatus} from "@/types/dto/enums/ProjectTaskStatus";
 import {toast} from "sonner";
 import {TaskShortDto} from "@/types/dto/tasks/TaskShortDto";
 import {ProjectTaskPriority} from "@/types/dto/enums/ProjectTaskPriority";
-import {useState} from "react";
+import {FC, useState} from "react";
+import {KanbanColumn} from "@/modules/tasks/components/KanbanColumn";
+import {TaskCard} from "@/modules/tasks/components/TaskCard";
 
 const columns = [
     { id: ProjectTaskStatus.Todo, title: "Очередь", color: "slate" as const },
@@ -34,7 +34,11 @@ const a: TaskShortDto = {
     deadline: new Date()
 }
 
-export function KanbanView({ projectId }: { projectId: string }) {
+interface KanbanViewProps {
+    projectId: string
+}
+
+const KanbanView: FC<KanbanViewProps> = ({projectId}) => {
     const { isLoading } = useGetTasksByProjectQuery(projectId)
     const [changeStatus] = useChangeTaskStatusMutation()
 
@@ -83,3 +87,5 @@ export function KanbanView({ projectId }: { projectId: string }) {
         </DndContext>
     )
 }
+
+export default KanbanView
