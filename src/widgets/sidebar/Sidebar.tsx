@@ -2,10 +2,7 @@
 
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom"; // или useMatch если нужно точное совпадение
-import {
-    BookOpen, CheckSquare, ChevronDown, ChevronRight,
-    FolderKanban, LogOut, Menu, Settings, Shield,
-} from "lucide-react";
+import {LogOut, Menu} from "lucide-react";
 
 import { Button } from "@/shared/ui_shadcn/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/shared/ui_shadcn/accordion";

@@ -12,6 +12,9 @@ export interface ProjectDetailedDto {
     createdAt: string | Date;
     updatedAt: string | Date;
 
+    color?: string;
+    icon?: string;
+
     // Владелец и участники
     owner: {
         id: string;

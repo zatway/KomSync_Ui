@@ -1,6 +1,3 @@
-// src/shared/ui/project/ProjectItem.tsx
-"use client";
-
 import { FC } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {ListTodo, MoreHorizontal, Users,} from "lucide-react";

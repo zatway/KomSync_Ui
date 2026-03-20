@@ -1,7 +1,7 @@
-import {NavLink} from "react-router-dom";
+import {NavLink, useLocation} from "react-router-dom";
 import {cn} from "@/shared/lib/ui_shadcn/utils";
 import {AccordionContent, AccordionItem, AccordionTrigger} from "@/shared/ui_shadcn/accordion";
-import {FolderKanban, GitPullRequestCreate} from "lucide-react";
+import {FolderKanban, GitPullRequestCreate, Table} from "lucide-react";
 import {useGetProjectsQuery} from "@/modules/projects/api/projectsApi";
 import {FC} from "react";
 import {AppRoutes} from "@/app/routes/AppRoutes";
@@ -128,6 +128,8 @@ const AccordionProjectsItem: FC<AccordionProjectsItemProps> = ({collapsed}) => {
     const Icon = FolderKanban;
     const hasChildren = !!projectBriefDto?.length;
 
+    const location = useLocation();
+
     return (
         <AccordionItem key={LABEL} value={LABEL} className="border-none">
             <AccordionTrigger
@@ -147,14 +149,27 @@ const AccordionProjectsItem: FC<AccordionProjectsItemProps> = ({collapsed}) => {
                 <AccordionContent className="pb-1 pl-8">
                     <div className="flex flex-col gap-1">
                         <NavLink
+                            key={"Таблица проектов"}
+                            to={AppRoutes.PROJECTS}
+                            className={({ isActive: linkActive }) =>
+                                cn(
+                                    "flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors",
+                                    "hover:bg-accent/70",
+                                    (location.pathname.startsWith(AppRoutes.PROJECTS) || linkActive) && "bg-accent/80 font-medium",
+                                )
+                            }
+                        >
+                            <Table size={20} className="min-w-[20px]"/>
+                            {!collapsed && "Таблица проектов"}
+                        </NavLink>
+                        <NavLink
                             key={"Создать проект"}
                             to={AppRoutes.PROJECT_CREATE}
-                            className={({isActive}) =>
+                            className={({ isActive: linkActive }) =>
                                 cn(
-                                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
-                                    "hover:bg-accent",
-                                    isActive && "bg-accent text-accent-foreground",
-                                    collapsed && "justify-center"
+                                    "flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors",
+                                    "hover:bg-accent/70",
+                                    (location.pathname.startsWith(AppRoutes.PROJECT_CREATE) || linkActive) && "bg-accent/80 font-medium",
                                 )
                             }
                         >

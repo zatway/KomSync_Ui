@@ -7,7 +7,6 @@ import {UpdateProjectRequest} from "@/types/dto/projects/UpdateProjectRequest";
 
 export const projectsApi = api.injectEndpoints({
     endpoints: (builder) => ({
-
         getProjects: builder.query<ProjectBriefDto[], void>({
             query: () => '/projects',
             providesTags: ['Project'],
