@@ -8,7 +8,6 @@ import {
     getSortedRowModel,
     getFilteredRowModel,
     useReactTable,
-    SortingState,
 } from "@tanstack/react-table";
 import { format, parseISO } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -23,7 +22,6 @@ import {
     TableRow,
 } from "@/shared/ui_shadcn/table";
 import { Button } from "@/shared/ui_shadcn/button";
-import { Badge } from "@/shared/ui_shadcn/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui_shadcn/avatar";
 import { Progress } from "@/shared/ui_shadcn/progress";
 import { useGetProjectsQuery } from "@/modules/projects/api/projectsApi";

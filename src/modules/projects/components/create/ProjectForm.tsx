@@ -55,30 +55,22 @@ type ProjectFormValues = z.infer<typeof projectCreateSchema>;
 
 interface ProjectFormProps {
     submitLabel?: string;
+    onSubmit: (values: ProjectFormValues) => Promise<void>;
+    isLoading?: boolean;
     initialValues?: Partial<ProjectFormValues>;
 }
 
 export default function ProjectForm({
                                         submitLabel = "Создать проект",
+                                        onSubmit,
+                                        isLoading = false,
                                         initialValues = {},
                                     }: ProjectFormProps) {
     const navigate = useNavigate();
 
-    const [createProject, { isLoading }] = useCreateProjectMutation();
-
     const handleSubmit = async (value: ProjectFormValues) => {
         try {
-            const projectDto: CreateProjectRequest = {
-                name: value.name,
-                description: value.description,
-                key: value.key,
-                startDate: value.startDate?.toISOString(),
-                dueDate: value.dueDate?.toISOString(),
-                color: value.color,
-                icon: value.icon,
-                tags: value.tags
-            }
-            const createdId = await createProject(projectDto).unwrap();
+            const createdId = await onSubmit(value)
             toast.success("Проект успешно создан");
             navigate(`${AppRoutes.PROJECTS}/${createdId}`);
         } catch (err: any) {
@@ -201,7 +193,7 @@ export default function ProjectForm({
                             <FormField
                                 control={form.control}
                                 name="icon"
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Иконка (emoji)</FormLabel>
                                         <FormControl>
@@ -213,9 +205,10 @@ export default function ProjectForm({
                                             />
                                         </FormControl>
                                         <FormDescription className="text-sm text-muted-foreground mt-1">
-                                            Кликни в поле и нажми <kbd className="border rounded px-1.5 py-0.5 text-xs">Win + .</kbd> или <kbd>Ctrl + Cmd + Space</kbd>, чтобы открыть выбор эмодзи
+                                            Кликни в поле и нажми <kbd className="border rounded px-1.5 py-0.5 text-xs">Win
+                                            + .</kbd> или <kbd>Ctrl + Cmd + Space</kbd>, чтобы открыть выбор эмодзи
                                         </FormDescription>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
@@ -229,7 +222,12 @@ export default function ProjectForm({
                                     if ("InputEvent" in window) {
                                         const input = document.querySelector('input[name="icon"]') as HTMLInputElement;
                                         if (input) input.focus();
-                                        document.dispatchEvent(new KeyboardEvent("keydown", { key: ".", code: "Period", metaKey: true, bubbles: true }));
+                                        document.dispatchEvent(new KeyboardEvent("keydown", {
+                                            key: ".",
+                                            code: "Period",
+                                            metaKey: true,
+                                            bubbles: true
+                                        }));
                                     }
                                 }}
                             >
@@ -334,7 +332,7 @@ export default function ProjectForm({
                         ) : (
                             <>
                                 {submitLabel}
-                                <Save className="ml-2 h-5 w-5" />
+                                <Save className="ml-2 h-5 w-5"/>
                             </>
                         )}
                     </Button>

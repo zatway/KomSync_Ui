@@ -14,6 +14,10 @@ import { ProjectsTable } from "./components/table/ProjectsTable";
 import { ProjectsTablePagination } from "./components/table/ProjectsTablePagination";
 import { ProjectsTableHeader } from "./components/table/ProjectsTableHeader";
 
+import { ProjectEditHeader } from "./components/create/edit/ProjectEditHeader";
+
+import { HistoryEntry } from "./components/histrory/HistoryEntry";
+
 //create
 export {ProjectForm}
 export {ProjectCreateHeader}
@@ -30,5 +34,11 @@ export {ProjectDetailHeader}
 export {ProjectsTable}
 export {ProjectsTablePagination}
 export {ProjectsTableHeader}
+
+//edit
+export {ProjectEditHeader}
+
+//history
+export {HistoryEntry}
 
 export {AccordionProjectsItem}

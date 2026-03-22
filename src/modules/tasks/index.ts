@@ -1,3 +1,3 @@
-import KanbanView from './components/KanbanView';
+import ProjectKanbanBoard from "./components/ProjectKanbanBoard";
 
-export { KanbanView };
+export {ProjectKanbanBoard}

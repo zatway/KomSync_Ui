@@ -1,4 +1,3 @@
-// src/modules/projects/api/projectCommentsApi.ts
 import { api } from "@/shared/lib";
 import {UpdateProjectCommentRequest} from "@/types/dto/projectComments/UpdateProjectCommentRequest";
 import {ProjectCommentDto} from "@/types/dto/projectComments/ProjectCommentDto";

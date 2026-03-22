@@ -32,7 +32,7 @@ const Header = () => {
         >
             <ThemeToggle/>
             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger asChild className="bg-background">
                     <Button
                         variant="ghost"
                         className="flex items-center gap-3"
@@ -59,7 +59,7 @@ const Header = () => {
                     </Button>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent align="end" className={"bg-primary"}>
+                <DropdownMenuContent align="end" className={"bg-background"}>
 
                     <DropdownMenuItem>
                         Профиль

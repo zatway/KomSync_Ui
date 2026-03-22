@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/shared/ui_shadcn/card";
-import { FolderKanban, ListTodo, MessageSquare } from "lucide-react";
+import {FolderKanban, HistoryIcon, ListTodo, MessageSquare} from "lucide-react";
 import { AppRoutes } from "@/app/routes/AppRoutes";
 import {cn} from "@/shared/lib/ui_shadcn/utils";
 import {useNavigate} from "react-router-dom";
@@ -11,11 +11,11 @@ interface Props {
 export function ProjectQuickActions({ projectId }: Props) {
     const navigate = useNavigate();
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
             <ActionButton
                 icon={<FolderKanban className="h-8 w-8" />}
                 title="Доска задач"
-                onClick={() => window.location.href = `${AppRoutes.PROJECTS}/${projectId}/board`}
+                onClick={() => window.location.href = `${AppRoutes.TASKS}/${projectId}/${AppRoutes.TASKS_DASHBOARD}`}
                 color="bg-blue-500/10 hover:bg-blue-500/20 text-blue-600"
             />
             <ActionButton
@@ -28,6 +28,12 @@ export function ProjectQuickActions({ projectId }: Props) {
                 icon={<MessageSquare className="h-8 w-8" />}
                 title="Комментарии"
                 onClick={() => navigate(`${AppRoutes.PROJECTS}/${projectId}/comments`)}
+                color="bg-violet-500/10 hover:bg-violet-500/20 text-violet-600"
+            />
+            <ActionButton
+                icon={<HistoryIcon className="h-8 w-8" />}
+                title="История"
+                onClick={() => navigate(`${AppRoutes.PROJECTS}/${projectId}/history`)}
                 color="bg-violet-500/10 hover:bg-violet-500/20 text-violet-600"
             />
         </div>

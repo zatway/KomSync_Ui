@@ -1,6 +1,10 @@
 export interface UpdateProjectRequest {
-    id: string;
     name?: string;
-    ownerId?: string;
+    key?: string;
     description?: string;
+    startDate?: string | null;
+    dueDate?: string | null;
+    color?: string | null;
+    icon?: string | null;
+    tags?: string[];
 }

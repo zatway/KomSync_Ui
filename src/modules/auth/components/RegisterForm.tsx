@@ -89,6 +89,7 @@ const RegisterForm = () => {
                     <Label>Пароль</Label>
                     <Input
                         required
+                        minLength={6}
                         type="password"
                         value={registerData.password}
                         onChange={(e) => onChangeData({password: e.target.value})}
@@ -99,6 +100,7 @@ const RegisterForm = () => {
                     <Label>Повторите пароль</Label>
                     <Input
                         required
+                        minLength={6}
                         type="password"
                         value={registerData.confirmPassword}
                         onChange={(e) => onChangeData({confirmPassword: e.target.value})}

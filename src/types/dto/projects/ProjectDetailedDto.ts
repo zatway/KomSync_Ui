@@ -53,20 +53,6 @@ export interface ProjectDetailedDto {
     tags?: string[];               // ["frontend", "mobile", "urgent", "clientX"]
     category?: string;             // "internal", "client", "product", "research"
     department?: string;           // "IT", "Marketing", "HR" и т.д.
-    budget?: {
-        planned: number;
-        spent: number;
-        currency: string;
-    };
-
-    // История изменений (можно подгружать отдельно, но иногда удобно иметь summary)
-    recentChanges?: Array<{
-        field: string;
-        oldValue: any;
-        newValue: any;
-        changedBy: { id: string; name: string };
-        changedAt: string | Date;
-    }>;
 
     // Метаданные
     isFavorite?: boolean;          // для текущего пользователя

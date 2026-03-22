@@ -1,11 +1,10 @@
 import {api, authLocalService, hasValue} from '../../../shared/lib'
 import {TokenResponse} from "@/types/dto/auth/TokenResponse";
 import {LoginRequest} from "@/types/dto/auth/LoginRequest";
-import {RefreshTokenResponse} from "@/types/dto/auth/RefreshTokenResponse";
-import {RevokeTokenRequest} from "@/types/dto/auth/RevokeTokenRequest";
 import {RegisterRequest} from "@/types/dto/auth/RegisterRequest";
 import {RefreshTokenRequest} from "@/types/dto/auth/RefreshTokenRequest";
 import {localStorageCore} from "@/shared/lib/storageHelper/localStorageCore";
+import {UserResponse} from "@/types/dto/auth/UserResponse";
 
 export const authApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -34,7 +33,15 @@ export const authApi = api.injectEndpoints({
             },
         }),
 
-        refresh: builder.mutation<RefreshTokenResponse, RefreshTokenRequest>({
+        getMeInfo: builder.query<UserResponse, void>({
+            query: () => ({
+                url: '/auth/me',
+                method: 'GET',
+            }),
+            // providesTags: (_, __, projectId) => [{ type: "ProjectHistory", id: projectId }],
+        }),
+
+        refresh: builder.mutation<TokenResponse, RefreshTokenRequest>({
             query: (body) => ({
                 url: '/auth/refresh',
                 method: 'POST',
@@ -50,7 +57,7 @@ export const authApi = api.injectEndpoints({
             },
         }),
 
-        logout: builder.mutation<boolean, {}>({
+        logout: builder.mutation<void, void>({
             query: (body) => ({
                 url: '/auth/logout',
                 method: 'POST',

@@ -11,6 +11,10 @@ export const AppRoutes = {
     PROJECT_SETTINGS: "/projects/:projectId/settings",
 
     // Глобальные задачи (если нужны отдельно от проектов)
+    TASKS: "/tasks",
+    TASK_CREATE: "/tasks/create",
+    TASK_EDIT: "/tasks/edit",
+    TASK_DETAIL: "/tasks/:taskId",
     TASKS_DASHBOARD: "/tasks/dashboard",
     TASKS_TABLE: "/tasks/table",
 

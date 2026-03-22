@@ -12,8 +12,4 @@ export interface ProjectCommentDto {
     updatedAt?: string;           // ISO, если редактировался
     parentId?: string;            // для ответов (null = корневой комментарий)
     replies?: ProjectCommentDto[];   // вложенные ответы (опционально загружаются отдельно)
-    likesCount?: number;
-    isEdited?: boolean;
-    canEdit?: boolean;            // права текущего пользователя
-    canDelete?: boolean;
 }

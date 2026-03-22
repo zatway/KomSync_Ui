@@ -6,10 +6,8 @@ export const api = createApi({
 
     baseQuery: axiosBaseQuery(),
 
-    // Если позже захочешь добавить refetch на фокус / reconnect / etc.
-    // refetchOnMountOrArgChange: 30,
-    // refetchOnFocus: true,
-    // refetchOnReconnect: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
 
     tagTypes: [
         'Auth',
@@ -18,10 +16,9 @@ export const api = createApi({
         'TaskComment',
         'Organization',
         'ProjectComments',
-        // добавляй свои теги по мере необходимости
     ],
 
-    endpoints: () => ({}), // пока пусто — будем добавлять в отдельных файлах
+    endpoints: () => ({}),
 })
 
 export default api

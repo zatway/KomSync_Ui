@@ -29,7 +29,6 @@ export const useRegister = () => {
 
     const onChangeData = (changedData: Partial<RegisterData>) => {
         setRegisterData((prev) => ({ ...prev, ...changedData }));
-        validateData()
     };
 
     const validateData = (): boolean => {

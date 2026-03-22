@@ -11,11 +11,10 @@ import {
     ProjectsPage,
     KnowledgePage,
     AdminPage,
-    TasksPage,
     ProjectCreatePage,
-    ProjectDetailPage, ProjectTablePage
+    ProjectDetailPage, ProjectTablePage, ProjectCommentsPage, ProjectHistoryPage, TaskCreatePage, TaskEditPage, TaskDetailPage,  TaskDashBoardPage
 } from "@/pages";
-import ProjectCommentsPage from "../../pages/projects/ProjectCommentsPage";
+import ProjectEditPage from "@/pages/projects/ProjectEditPage";
 
 export const AppRouter = () => {
     return (
@@ -34,24 +33,27 @@ export const AppRouter = () => {
                         <Route path={AppRoutes.PROJECTS} element={<ProjectTablePage/>}/>
                         <Route path={`${AppRoutes.PROJECTS}/create`} element={<ProjectCreatePage/>}/>
 
-                        {/* Детальная страница проекта + вложенные вкладки */}
                         <Route path={`${AppRoutes.PROJECTS}/:projectId`}>
                             <Route index element={<ProjectDetailPage/>}/> {/* /projects/:id */}
-                            <Route path="board" element={<ProjectsPage/>}/> {/* /projects/:id/board */}
                             <Route path="table" element={<ProjectsPage/>}/> {/* /projects/:id/table */}
-                            <Route path="edit" element={<ProjectsPage/>}/> {/* /projects/:id/settings */}
-                            <Route path="comments" element={<ProjectCommentsPage/>}/> {/* /projects/:id/settings */}
-                            {/* Можно добавить ещё: comments, history, members и т.д. */}
+                            <Route path="edit" element={<ProjectEditPage/>}/> {/* /projects/:id/settings */}
+                            <Route path="comments" element={<ProjectCommentsPage/>}/> {/* /projects/:id/comments */}
+                            <Route path="history" element={<ProjectHistoryPage/>}/> {/* /projects/:id/history */}
                         </Route>
 
-                        {/* Глобальные задачи (если есть общий дашборд/таблица вне проектов) */}
-                        <Route path={AppRoutes.TASKS_DASHBOARD} element={<TasksPage variant="dashboard"/>}/>
-                        <Route path={AppRoutes.TASKS_TABLE} element={<TasksPage variant="table"/>}/>
+                        <Route path={`${AppRoutes.TASKS}/:projectId`}>
+                            <Route index element={<TaskDashBoardPage />} />               {/* /tasks/:projectId → Kanban */}
+                            <Route path="create" element={<TaskCreatePage />} />          {/* /tasks/:projectId/create */}
+                            <Route path="detail/:taskId" element={<TaskDetailPage />} />  {/* /tasks/:projectId/detail/:taskId */}
+                            <Route path="edit/:taskId" element={<TaskEditPage />} />      {/* /tasks/:projectId/edit/:taskId */}
+                            {/* <Route path="history" element={<TaskHistoryPage />} /> */} {/* если нужна история задач */}
+                        </Route>
 
-                        {/* База знаний */}
+                        {/*<Route path={AppRoutes.TASKS_DASHBOARD} element={<TasksPage variant="dashboard"/>}/>*/}
+                        {/*<Route path={AppRoutes.TASKS_TABLE} element={<TasksPage variant="table"/>}/>*/}
+
                         <Route path={AppRoutes.KNOWLEDGE} element={<KnowledgePage/>}/>
 
-                        {/* Админка — только для роли Admin */}
                         <Route element={<RoleRoute role="Admin"/>}>
                             <Route path={AppRoutes.ADMIN} element={<AdminPage/>}/>
                         </Route>
