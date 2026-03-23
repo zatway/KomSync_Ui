@@ -7,7 +7,7 @@ interface DepartmentsSelectProps {
 }
 
 const mockDepartments = [
-    {id: "dep-1", name: "Разработка"},
+    {id: "11111111-1111-1111-1111-111111111111", name: "Разработка"},
     {id: "dep-2", name: "Маркетинг"},
     {id: "dep-3", name: "Продажи"},
 ];

@@ -6,7 +6,7 @@ import {ru} from "date-fns/locale";
 import {Trash2, Reply, Edit} from "lucide-react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/shared/ui_shadcn/avatar";
 import {Button} from "@/shared/ui_shadcn/button";
-import {ProjectCommentForm} from "./ProjectCommentForm";
+import {ProjectCommentForm} from "@/modules/projects";
 import {ProjectCommentDto} from "@/types/dto/projectComments/ProjectCommentDto";
 import {cn} from "@/shared/lib/ui_shadcn/utils";
 
@@ -32,7 +32,7 @@ export function ProjectCommentItem({comment, projectId, level}: Props) {
                     <span className="font-medium">{comment.author.name}</span>
                     <span className="text-xs text-muted-foreground">
             {format(parseISO(comment.createdAt), "d MMM yyyy, HH:mm", {locale: ru})}
-                        {comment.isEdited && <span className="ml-1 italic">(изменено)</span>}
+                        {comment.updatedAt && <span className="ml-1 italic">(изменено)</span>}
           </span>
                 </div>
 

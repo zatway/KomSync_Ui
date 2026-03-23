@@ -12,6 +12,8 @@ export const api = createApi({
     tagTypes: [
         'Auth',
         'Project',
+        'ProjectHistory',
+        'ProjectComment',
         'Task',
         'TaskComment',
         'Organization',

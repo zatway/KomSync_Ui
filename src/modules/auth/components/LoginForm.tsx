@@ -4,24 +4,30 @@ import {useLoginMutation} from "@/modules/auth/api/authApi";
 import {useLogin} from "@/modules/auth/hooks/useLogin";
 import {Button} from "@/shared/ui_shadcn/button";
 import {Logo} from "@/shared/ui/Logo/Logo";
+import {useNavigate} from "react-router-dom";
+import {AppRoutes} from "@/app/routes/AppRoutes";
+import {FormEvent} from "react";
 
 const LoginForm = () => {
     const [login, {isLoading}] = useLoginMutation();
     const {loginData, validateData, onChangeData} = useLogin();
+    const navigate = useNavigate();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         if (!validateData()) return;
 
         try {
+            console.log({  email: loginData.email,
+                password: loginData.password,})
             const result = await login({
                 email: loginData.email,
                 password: loginData.password,
-                externalProvider: undefined,
             }).unwrap();
 
             console.log("Успешный логин:", result);
+            navigate(AppRoutes.PROJECTS)
         } catch (err) {
             console.error("Ошибка авторизации:", err);
         }
@@ -71,7 +77,11 @@ const LoginForm = () => {
                 >
                     {isLoading ? "Вход..." : "Войти"}
                 </Button>
-
+                <div className="grid gap-2">
+                    <Label onClick={() => navigate(AppRoutes.REGISTER)} >
+                        Нет аккаунта? Создать
+                    </Label>
+                </div>
             </form>
         </div>
     );

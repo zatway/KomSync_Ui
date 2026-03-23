@@ -4,23 +4,25 @@ import {LoginRequest} from "@/types/dto/auth/LoginRequest";
 import {RegisterRequest} from "@/types/dto/auth/RegisterRequest";
 import {RefreshTokenRequest} from "@/types/dto/auth/RefreshTokenRequest";
 import {localStorageCore} from "@/shared/lib/storageHelper/localStorageCore";
-import {UserResponse} from "@/types/dto/auth/UserResponse";
+import {env} from '@/env';
+
+const getUrl = (endUrl: string) => `${env.AUTH_URL}${endUrl}`;
 
 export const authApi = api.injectEndpoints({
     endpoints: (builder) => ({
         register: builder.mutation<void, RegisterRequest>({
-            query: (body) => ({
-                url: '/auth/register',
+            query: (data) => ({
+                url: getUrl(env.AUTH_REGISTER_URL),
                 method: 'POST',
-                body,
+                data,
             }),
         }),
 
         login: builder.mutation<TokenResponse, LoginRequest>({
-            query: (body) => ({
-                url: '/auth/login',
+            query: (data) => ({
+                url: getUrl(env.AUTH_LOGIN_URL),
                 method: 'POST',
-                body,
+                data,
             }),
             async onQueryStarted(_, {queryFulfilled}) {
                 try {
@@ -33,19 +35,11 @@ export const authApi = api.injectEndpoints({
             },
         }),
 
-        getMeInfo: builder.query<UserResponse, void>({
-            query: () => ({
-                url: '/auth/me',
-                method: 'GET',
-            }),
-            // providesTags: (_, __, projectId) => [{ type: "ProjectHistory", id: projectId }],
-        }),
-
         refresh: builder.mutation<TokenResponse, RefreshTokenRequest>({
-            query: (body) => ({
-                url: '/auth/refresh',
+            query: (data) => ({
+                url: getUrl(env.AUTH_REFRESH_URL),
                 method: 'POST',
-                body,
+                data,
             }),
             async onQueryStarted(_, {queryFulfilled}) {
                 try {
@@ -58,10 +52,10 @@ export const authApi = api.injectEndpoints({
         }),
 
         logout: builder.mutation<void, void>({
-            query: (body) => ({
-                url: '/auth/logout',
+            query: (data) => ({
+                url: getUrl(env.AUTH_LOGOUT_URL),
                 method: 'POST',
-                body,
+                data,
             }),
             invalidatesTags: ['Project', 'Task', 'TaskComment'],
 

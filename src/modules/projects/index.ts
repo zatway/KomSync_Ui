@@ -14,9 +14,14 @@ import { ProjectsTable } from "./components/table/ProjectsTable";
 import { ProjectsTablePagination } from "./components/table/ProjectsTablePagination";
 import { ProjectsTableHeader } from "./components/table/ProjectsTableHeader";
 
-import { ProjectEditHeader } from "./components/create/edit/ProjectEditHeader";
+import { ProjectEditHeader } from "./components/edit/ProjectEditHeader";
 
 import { HistoryEntry } from "./components/histrory/HistoryEntry";
+
+import { ProjectCommentsHeader } from "./components/comments/ProjectCommentsHeader";
+import { ProjectCommentItem } from "./components/comments/ProjectCommentItem";
+import { ProjectCommentForm } from "./components/comments/ProjectCommentForm";
+import { ProjectCommentsList } from "./components/comments/ProjectCommentsList";
 
 //create
 export {ProjectForm}
@@ -40,5 +45,12 @@ export {ProjectEditHeader}
 
 //history
 export {HistoryEntry}
+
+//comments
+export {ProjectCommentsHeader}
+export {ProjectCommentItem}
+export {ProjectCommentForm}
+export {ProjectCommentsList}
+
 
 export {AccordionProjectsItem}

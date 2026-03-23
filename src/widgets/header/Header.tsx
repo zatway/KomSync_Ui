@@ -8,15 +8,11 @@ import {
     DropdownMenuTrigger
 } from "@/shared/ui_shadcn/dropdown-menu";
 import {ThemeToggle} from "@/shared/ui";
+import {ProfileInfo} from "@/modules/profile";
 
 const Header = () => {
 
     const [logout] = useLogoutMutation();
-
-    const user = {
-        name: "Иван Иванов",
-        email: "ivan@example.com",
-    };
 
     return (
         <header
@@ -32,41 +28,15 @@ const Header = () => {
         >
             <ThemeToggle/>
             <DropdownMenu>
-                <DropdownMenuTrigger asChild className="bg-background">
-                    <Button
-                        variant="ghost"
-                        className="flex items-center gap-3"
-                    >
-
-                        <Avatar>
-                            <AvatarFallback>
-                                {user.name
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")}
-                            </AvatarFallback>
-                        </Avatar>
-
-                        <div className="text-left hidden md:block">
-                            <div className="text-sm font-medium">
-                                {user.name}
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                                {user.email}
-                            </div>
-                        </div>
-
-                    </Button>
-                </DropdownMenuTrigger>
+                    <ProfileInfo/>
 
                 <DropdownMenuContent align="end" className={"bg-background"}>
-
                     <DropdownMenuItem>
                         Профиль
                     </DropdownMenuItem>
 
                     <DropdownMenuItem
-                        onClick={() => ({})}
+                        onClick={() => logout()}
                     >
                         Выйти
                     </DropdownMenuItem>

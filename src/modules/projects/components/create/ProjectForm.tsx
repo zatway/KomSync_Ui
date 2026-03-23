@@ -23,15 +23,14 @@ import {
 } from "@/shared/ui_shadcn/popover";
 import {Calendar} from "@/shared/ui_shadcn/calendar";
 import {cn} from "@/shared/lib/ui_shadcn/utils";
-import {useCreateProjectMutation} from "@/modules/projects/api/projectsApi";
-import {CreateProjectRequest} from "@/types/dto/projects/CreateProjectRequest";
 import {toast} from "sonner";
 import {AppRoutes} from "@/app/routes/AppRoutes";
 import {useNavigate} from "react-router-dom";
+import {DepartmentSelect} from "@/modules/organization";
 
-// Схема валидации (очень строгая и понятная)
 const projectCreateSchema = z.object({
     name: z.string().min(3, "Минимум 3 символа").max(120, "Слишком длинное название"),
+    departmentId: z.string().min(1, "Выберите подразделение"),
     key: z
         .string()
         .min(2, "Минимум 2 символа")
@@ -78,10 +77,10 @@ export default function ProjectForm({
         }
     };
 
-
     const form = useForm<ProjectFormValues>({
         defaultValues: {
             name: "",
+            departmentId: "",
             key: "",
             description: "",
             startDate: undefined,
@@ -308,6 +307,28 @@ export default function ProjectForm({
                                         </PopoverContent>
                                     </Popover>
                                     <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-6">
+                    <h2 className="text-xl font-semibold tracking-tight">Подразделение</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-1 gap-6">
+                        <FormField
+                            control={form.control}
+                            name="departmentId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Выберите подразделение *</FormLabel>
+                                    <FormControl>
+                                        <DepartmentSelect
+                                            selectedDepartmentId={field.value?.toString()}
+                                            onChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />

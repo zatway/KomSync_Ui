@@ -6,5 +6,6 @@ export interface CreateProjectRequest {
     dueDate?: string;                // ISO date string (опционально)
     color?: string;                  // #HEX или hsl() — цвет проекта в UI
     icon?: string;                   // emoji или короткий путь к иконке
+    departmentId: string;                   // emoji или короткий путь к иконке
     tags?: string[];                 // массив тегов, например ["frontend", "urgent"]
 }

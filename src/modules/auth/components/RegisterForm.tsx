@@ -10,6 +10,7 @@ import {UserRole} from "@/types/dto/enums/UserRole";
 import {Checkbox} from "@/shared/ui_shadcn/checkbox";
 import DepartmentSelect from "@/modules/organization/components/DepartmentSelect";
 import PositionSelect from "@/modules/organization/components/PositionSelect";
+import {AppRoutes} from "@/app/routes/AppRoutes";
 
 const RegisterForm = () => {
     const navigate = useNavigate();
@@ -109,12 +110,14 @@ const RegisterForm = () => {
 
                 <div className="grid gap-2">
                     <Label>Подразделение</Label>
-                    <DepartmentSelect selectedDepartmentId={registerData.departmentId} onChange={v => onChangeData({departmentId: v})}/>
+                    <DepartmentSelect selectedDepartmentId={registerData.departmentId}
+                                      onChange={v => onChangeData({departmentId: v})}/>
                 </div>
 
                 <div className="grid gap-2">
                     <Label>Должность</Label>
-                    <PositionSelect selectedPositionId={registerData.positionId} onChange={v => onChangeData({positionId: v})}/>
+                    <PositionSelect selectedPositionId={registerData.positionId}
+                                    onChange={v => onChangeData({positionId: v})}/>
                 </div>
 
                 <div className="grid gap-2">
@@ -157,6 +160,11 @@ const RegisterForm = () => {
                 >
                     {isLoading ? "Регистрация..." : "Зарегистрироваться"}
                 </Button>
+                <div className="grid gap-2">
+                    <Label onClick={() => navigate(AppRoutes.LOGIN)}>
+                        Есть аккаунт? Войти
+                    </Label>
+                </div>
             </form>
 
             {showSuccess && (

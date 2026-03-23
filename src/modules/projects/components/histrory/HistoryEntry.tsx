@@ -42,14 +42,6 @@ export function HistoryEntry({ entry }: { entry: ProjectHistoryEntryDto }) {
                         </p>
                     </div>
                 </div>
-
-                {entry.comment && (
-                    <div className="pt-2 border-t">
-                        <p className="text-sm italic text-muted-foreground">
-                            Комментарий: {entry.comment}
-                        </p>
-                    </div>
-                )}
             </CardContent>
         </Card>
     );

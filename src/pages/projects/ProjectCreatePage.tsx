@@ -6,6 +6,7 @@ export default function ProjectCreatePage() {
     const [createProject, { isLoading }] = useCreateProjectMutation();
 
     const handleSubmit = async (values: CreateProjectRequest) => {
+        console.log(values)
         await createProject(values).unwrap();
     }
 
@@ -17,6 +18,7 @@ export default function ProjectCreatePage() {
                 <ProjectForm
                     onSubmit={value => handleSubmit({
                         name: value.name,
+                        departmentId: value.departmentId,
                         description: value.description,
                         key: value.key,
                         startDate: value.startDate?.toISOString(),

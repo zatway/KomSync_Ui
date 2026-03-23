@@ -9,5 +9,4 @@ export interface ProjectHistoryEntryDto {
         avatarUrl?: string;
     };
     changedAt: string;             // ISO строка
-    comment?: string;              // опциональный комментарий к изменению (например, "уменьшили срок из-за бюджета")
 }

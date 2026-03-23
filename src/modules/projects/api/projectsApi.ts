@@ -1,16 +1,25 @@
-// src/modules/projects/api/projectsApi.ts
 import { api } from "@/shared/lib";
+import { env } from "@/env";
+
 import { ProjectBriefDto } from "@/types/dto/projects/ProjectBriefDto";
 import { ProjectDetailedDto } from "@/types/dto/projects/ProjectDetailedDto";
 import { CreateProjectRequest } from "@/types/dto/projects/CreateProjectRequest";
 import { UpdateProjectRequest } from "@/types/dto/projects/UpdateProjectRequest";
 import { ProjectHistoryEntryDto } from "@/types/dto/projects/ProjectHistoryEntryDto";
+import {ProjectCommentDto} from "@/types/dto/projectComments/ProjectCommentDto";
+import {CreateProjectCommentRequest} from "@/types/dto/projectComments/CreateProjectCommentRequest";
+import {UpdateProjectCommentRequest} from "@/types/dto/projectComments/UpdateProjectCommentRequest";
+
+const getUrl = (endUrl: string) => `${env.PROJECTS_URL}${endUrl}`;
 
 export const projectsApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        // --- Список проектов ---
+
         getProjects: builder.query<ProjectBriefDto[], void>({
-            query: () => "/projects",
+            query: () => ({
+                url: getUrl(""),
+                method: "GET",
+            }),
             providesTags: (result) =>
                 result
                     ? [...result.map(({ id }) => ({ type: "Project" as const, id })), "Project"]
@@ -19,26 +28,29 @@ export const projectsApi = api.injectEndpoints({
 
         // --- Детали проекта ---
         getProjectById: builder.query<ProjectDetailedDto, string>({
-            query: (id) => `/projects/${id}`,
-            providesTags: (result, error, id) => [{ type: "Project", id }],
+            query: (id) => ({
+                url: getUrl(`/${id}`),
+                method: "GET",
+            }),
+            providesTags: (_, __, id) => [{ type: "Project", id }],
         }),
 
-        // --- Создание проекта ---
+        // --- Создание проекта (PUT) ---
         createProject: builder.mutation<string, CreateProjectRequest>({
-            query: (body) => ({
-                url: "/projects",
-                method: "POST",
-                body,
+            query: (data) => ({
+                url: getUrl(""),
+                method: "PUT",
+                data,
             }),
             invalidatesTags: ["Project"],
         }),
 
         // --- Обновление проекта ---
         updateProject: builder.mutation<boolean, UpdateProjectRequest & { id: string }>({
-            query: ({ id, ...body }) => ({
-                url: `/projects/${id}`,
+            query: ({ id, ...data }) => ({
+                url: getUrl(`/${id}`),
                 method: "PATCH",
-                body,
+                data,
             }),
             invalidatesTags: (_, __, { id }) => [{ type: "Project", id }, "Project"],
         }),
@@ -46,7 +58,7 @@ export const projectsApi = api.injectEndpoints({
         // --- Удаление проекта ---
         deleteProject: builder.mutation<boolean, string>({
             query: (id) => ({
-                url: `/projects/${id}`,
+                url: getUrl(`/${id}`),
                 method: "DELETE",
             }),
             invalidatesTags: ["Project"],
@@ -54,24 +66,51 @@ export const projectsApi = api.injectEndpoints({
 
         // --- История проекта ---
         getProjectHistory: builder.query<ProjectHistoryEntryDto[], string>({
-            query: (projectId) => `/projects/${projectId}/history`,
-            providesTags: (_, __, projectId) => [{ type: "ProjectHistory" as const, id: projectId }],
+            query: (projectId) => ({
+                url: getUrl(`/${projectId}${env.PROJECTS_HISTORY_URL}`),
+                method: "GET",
+            }),
+            providesTags: (_, __, projectId) => [
+                { type: "ProjectHistory" as const, id: projectId },
+            ],
         }),
 
-        // --- Добавление комментария к проекту ---
+        // --- Получить комментарии ---
+        getProjectComments: builder.query<ProjectCommentDto[], string>({
+            query: (projectId) => ({
+                url: getUrl(`/${projectId}${env.PROJECTS_COMMENTS_URL}`),
+                method: "GET",
+            }),
+            providesTags: (_, __, projectId) => [
+                { type: "ProjectComment" as const, id: projectId },
+            ],
+        }),
+
         addProjectComment: builder.mutation<
             { id: string; createdAt: string },
-            { projectId: string; content: string }
+            { projectId: string; data: CreateProjectCommentRequest }
         >({
-            query: ({ projectId, content }) => ({
-                url: `/projects/${projectId}/comments`,
-                method: "POST",
-                body: { content },
+            query: ({ projectId, data }) => ({
+                url: getUrl(`/${projectId}${env.PROJECTS_COMMENTS_URL}`),
+                method: "PUT",
+                data,
             }),
             invalidatesTags: (_, __, { projectId }) => [
-                { type: "ProjectHistory" as const, id: projectId },
+                { type: "ProjectComment" as const, id: projectId },
                 { type: "Project" as const, id: projectId },
             ],
+        }),
+
+        updateProjectComment: builder.mutation<
+            boolean,
+            { id: string; data: UpdateProjectCommentRequest }
+        >({
+            query: ({ id, data }) => ({
+                url: getUrl(`/comments/${id}`),
+                method: "PATCH",
+                data,
+            }),
+            invalidatesTags: ["ProjectComment"],
         }),
     }),
     overrideExisting: false,
@@ -84,5 +123,7 @@ export const {
     useUpdateProjectMutation,
     useDeleteProjectMutation,
     useGetProjectHistoryQuery,
+    useGetProjectCommentsQuery,
     useAddProjectCommentMutation,
+    useUpdateProjectCommentMutation,
 } = projectsApi;

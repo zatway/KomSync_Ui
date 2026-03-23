@@ -1,9 +1,9 @@
 import {ProjectCommentDto} from "@/types/dto/projectComments/ProjectCommentDto";
 import {MessageSquare} from "lucide-react";
-import {ProjectCommentItem} from "@/modules/porjectComments";
+import {ProjectCommentItem} from "@/modules/projects";
 
 interface Props {
-    comments: ProjectCommentDto[];
+    comments?: ProjectCommentDto[];
     isLoading: boolean;
     projectId: string;
 }
@@ -26,7 +26,7 @@ export function ProjectCommentsList({ comments, isLoading, projectId }: Props) {
         );
     }
 
-    if (!comments.length) {
+    if (!comments?.length) {
         return (
             <div className="text-center py-16 text-muted-foreground">
                 <MessageSquare className="mx-auto h-12 w-12 mb-4 opacity-50" />

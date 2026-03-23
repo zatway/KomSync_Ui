@@ -9,15 +9,19 @@ export const axiosInstance = axios.create({
     timeout: 30000,
     headers: {
         Accept: 'application/json',
+        'Content-Type': 'application/json',
     },
+    transformRequest: [(data) => {
+        return JSON.stringify(data);
+    }],
 })
 
 axiosInstance.interceptors.request.use(config => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('accessToken')
 
     if (token) {
         config.headers = config.headers ?? {}
-        config.headers.Authorization = `Bearer ${token}`
+        config.headers.Authorization = `Bearer ${JSON.parse(token)}`
     }
 
     return config
@@ -28,6 +32,7 @@ type AxiosBaseQueryArgs = {
     method?: AxiosRequestConfig['method']
     data?: AxiosRequestConfig['data']
     params?: AxiosRequestConfig['params']
+    responseType?: AxiosRequestConfig['responseType']
 }
 
 type AxiosBaseQueryError = {
@@ -37,13 +42,14 @@ type AxiosBaseQueryError = {
 
 export const axiosBaseQuery =
     (): BaseQueryFn<AxiosBaseQueryArgs, unknown, AxiosBaseQueryError> =>
-        async ({url, method = 'GET', data, params}) => {
+        async ({url, method = 'GET', data, params, responseType}) => {
             try {
                 const result = await axiosInstance({
                     url,
                     method,
                     data,
                     params,
+                    responseType,
                 })
 
                 return {

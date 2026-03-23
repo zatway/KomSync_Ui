@@ -1,14 +1,14 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Send } from "lucide-react";
-import { Button } from "@/shared/ui_shadcn/button";
-import { Textarea } from "@/shared/ui_shadcn/textarea";
-import { Form, FormControl, FormField, FormItem } from "@/shared/ui_shadcn/form";
-import { toast } from "sonner";
-import {useCreateProjectCommentMutation} from "@/modules/porjectComments/api/projectCommentsApi";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {z} from "zod";
+import {Send} from "lucide-react";
+import {Button} from "@/shared/ui_shadcn/button";
+import {Textarea} from "@/shared/ui_shadcn/textarea";
+import {Form, FormControl, FormField, FormItem} from "@/shared/ui_shadcn/form";
+import {toast} from "sonner";
+import {useAddProjectCommentMutation} from "@/modules/projects/api/projectsApi";
 
 const commentSchema = z.object({
     content: z.string().min(1, "Комментарий не может быть пустым").max(2000),
@@ -23,20 +23,24 @@ interface Props {
     initialValues?: string;
 }
 
-export function ProjectCommentForm({ projectId, parentId, onSuccess, initialValues }: Props) {
-    const [createComment, { isLoading }] = useCreateProjectCommentMutation();
+export function ProjectCommentForm({projectId, parentId, onSuccess, initialValues}: Props) {
+    const [createComment, {isLoading}] = useAddProjectCommentMutation();
 
     const form = useForm<FormValues>({
         resolver: zodResolver(commentSchema),
-        defaultValues: { content: "" },
+        defaultValues: {content: ""},
     });
 
     const onSubmit = async (values: FormValues) => {
         try {
+
             await createComment({
-                projectId,
-                content: values.content,
-                parentId,
+                projectId: projectId,
+                data: {
+                    content: values.content,
+                    parentId,
+                    projectId: projectId
+                }
             }).unwrap();
 
             form.reset();
@@ -54,7 +58,7 @@ export function ProjectCommentForm({ projectId, parentId, onSuccess, initialValu
                     control={form.control}
                     name="content"
                     defaultValue={initialValues}
-                    render={({ field }) => (
+                    render={({field}) => (
                         <FormItem>
                             <FormControl>
                                 <Textarea
@@ -69,7 +73,7 @@ export function ProjectCommentForm({ projectId, parentId, onSuccess, initialValu
 
                 <div className="flex justify-end">
                     <Button type="submit" disabled={isLoading || !form.formState.isValid}>
-                        <Send className="mr-2 h-4 w-4" />
+                        <Send className="mr-2 h-4 w-4"/>
                         {isLoading ? "Отправка..." : parentId ? "Ответить" : "Отправить"}
                     </Button>
                 </div>
