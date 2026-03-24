@@ -54,7 +54,7 @@ type ProjectFormValues = z.infer<typeof projectCreateSchema>;
 
 interface ProjectFormProps {
     submitLabel?: string;
-    onSubmit: (values: ProjectFormValues) => Promise<void>;
+    onSubmit: (values: ProjectFormValues) => Promise<string | undefined>;
     isLoading?: boolean;
     initialValues?: Partial<ProjectFormValues>;
 }
@@ -70,6 +70,7 @@ export default function ProjectForm({
     const handleSubmit = async (value: ProjectFormValues) => {
         try {
             const createdId = await onSubmit(value)
+            if(!createdId) throw new Error();
             toast.success("Проект успешно создан");
             navigate(`${AppRoutes.PROJECTS}/${createdId}`);
         } catch (err: any) {
@@ -320,7 +321,7 @@ export default function ProjectForm({
                             control={form.control}
                             name="departmentId"
                             render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="flex flex-col gap-1.5">
                                     <FormLabel>Выберите подразделение *</FormLabel>
                                     <FormControl>
                                         <DepartmentSelect

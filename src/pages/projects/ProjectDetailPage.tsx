@@ -26,7 +26,7 @@ export default function ProjectDetailPage() {
         return <ProjectDetailSkeleton/>;
     }
 
-    if (!project) {
+    if (!project || isError) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4">
                 <AlertCircle className="h-16 w-16 text-destructive mb-6"/>

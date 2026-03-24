@@ -6,8 +6,7 @@ export default function ProjectCreatePage() {
     const [createProject, { isLoading }] = useCreateProjectMutation();
 
     const handleSubmit = async (values: CreateProjectRequest) => {
-        console.log(values)
-        await createProject(values).unwrap();
+        return await createProject(values).unwrap();
     }
 
     return (

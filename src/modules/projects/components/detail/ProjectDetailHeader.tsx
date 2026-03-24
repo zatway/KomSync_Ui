@@ -39,7 +39,10 @@ export function ProjectDetailHeader({ project }: Props) {
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Назад
                 </Button>
-                <Button onClick={() => deleteProject(project.id)}>
+                <Button onClick={async () => {
+                    await deleteProject(project.id)
+                    navigate(AppRoutes.PROJECTS)
+                }}>
                     <Delete className="mr-2 h-4 w-4" />
                     {isLoading ? 'Удаление...' : 'Удалить'}
                 </Button>
