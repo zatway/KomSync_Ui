@@ -1,8 +1,12 @@
+import type { CommentAttachmentDto } from "../attachments/CommentAttachmentDto";
+
 export interface TaskCommentDto {
     id: string;
     taskId: string;
     userId: string;
+    authorName: string;
     content: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
+    attachments?: CommentAttachmentDto[];
 }

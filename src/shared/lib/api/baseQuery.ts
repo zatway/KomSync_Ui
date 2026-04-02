@@ -9,11 +9,7 @@ export const axiosInstance = axios.create({
     timeout: 30000,
     headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
     },
-    transformRequest: [(data) => {
-        return JSON.stringify(data);
-    }],
 })
 
 axiosInstance.interceptors.request.use(config => {
@@ -22,6 +18,17 @@ axiosInstance.interceptors.request.use(config => {
     if (token) {
         config.headers = config.headers ?? {}
         config.headers.Authorization = `Bearer ${JSON.parse(token)}`
+    }
+
+    // Let axios set proper Content-Type for multipart/form-data
+    if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+        if (config.headers) {
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            delete config.headers['Content-Type']
+        }
+    } else {
+        config.headers = config.headers ?? {};
+        config.headers['Content-Type'] = 'application/json'
     }
 
     return config

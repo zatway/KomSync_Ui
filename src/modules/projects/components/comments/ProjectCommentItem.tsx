@@ -49,6 +49,22 @@ export function ProjectCommentItem({comment, projectId, level}: Props) {
                     </p>
                 )}
 
+                {comment.attachments && comment.attachments.length > 0 && (
+                    <div className="mt-3 flex flex-col gap-1">
+                        {comment.attachments.map((a) => (
+                            <a
+                                key={a.id}
+                                href={a.downloadUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs text-primary underline underline-offset-2 w-fit"
+                            >
+                                {a.fileName}
+                            </a>
+                        ))}
+                    </div>
+                )}
+
                 <div className="flex items-center gap-4 mt-3">
                     <Button
                         variant="ghost"

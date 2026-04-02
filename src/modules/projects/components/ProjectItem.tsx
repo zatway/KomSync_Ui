@@ -84,13 +84,13 @@ const ProjectItem: FC<ProjectItemProps> = ({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem asChild>
-                            <NavLink to={`${projectPath}/board`}>Открыть доску</NavLink>
+                            <NavLink to={`${AppRoutes.TASKS}/${project.id}`}>Открыть доску</NavLink>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <NavLink to={`${projectPath}/table`}>Открыть таблицу задач</NavLink>
+                            <NavLink to={`${projectPath}/table`}>Таблица задач</NavLink>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <NavLink to={`${projectPath}/settings`}>Настройки проекта</NavLink>
+                            <NavLink to={`${projectPath}/edit`}>Настройки проекта</NavLink>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

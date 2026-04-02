@@ -1,23 +1,25 @@
+import { env } from "@/env";
+
+/** Маршруты приложения (значения из `env.ts`). */
 export const AppRoutes = {
-    LOGIN: "/login",
-    REGISTER: "/register",
+    LOGIN: env.ROUTE_LOGIN,
+    REGISTER: env.ROUTE_REGISTER,
 
-    // Проекты
-    PROJECTS: "/projects",
-    PROJECT_CREATE: "/projects/create",           // ← изменили на вложенный путь
-    PROJECT_DETAIL: "/projects/:projectId",       // базовый путь для проекта
-    PROJECT_BOARD: "/projects/:projectId/board",
-    PROJECT_TABLE: "/projects/:projectId/table",
-    PROJECT_SETTINGS: "/projects/:projectId/settings",
+    PROJECTS: env.ROUTE_PROJECTS,
+    PROJECT_CREATE: env.ROUTE_PROJECT_CREATE,
+    PROJECT_DETAIL: `${env.ROUTE_PROJECTS}/:projectId`,
+    PROJECT_BOARD: `${env.ROUTE_PROJECTS}/:projectId/board`,
+    PROJECT_TABLE: `${env.ROUTE_PROJECTS}/:projectId/table`,
+    PROJECT_SETTINGS: `${env.ROUTE_PROJECTS}/:projectId/settings`,
 
-    // Глобальные задачи (если нужны отдельно от проектов)
-    TASKS: "/tasks",
-    TASK_CREATE: "/tasks/create",
-    TASK_EDIT: "/tasks/edit",
-    TASK_DETAIL: "/tasks/:taskId",
-    TASKS_DASHBOARD: "/tasks/dashboard",
-    TASKS_TABLE: "/tasks/table",
+    TASKS: env.ROUTE_TASKS,
+    TASK_CREATE: `${env.ROUTE_TASKS}/create`,
+    TASK_EDIT: `${env.ROUTE_TASKS}/edit`,
+    TASK_DETAIL: `${env.ROUTE_TASKS}/:taskId`,
+    TASKS_DASHBOARD: `${env.ROUTE_TASKS}/dashboard`,
+    TASKS_TABLE: `${env.ROUTE_TASKS}/table`,
 
-    KNOWLEDGE: "/knowledge",
-    ADMIN: "/admin",
-};
+    KNOWLEDGE: env.ROUTE_KNOWLEDGE,
+    ADMIN: env.ROUTE_ADMIN,
+    PROFILE: env.ROUTE_PROFILE,
+} as const;

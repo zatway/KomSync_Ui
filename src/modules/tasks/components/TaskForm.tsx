@@ -1,0 +1,276 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/shared/ui_shadcn/button";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/shared/ui_shadcn/form";
+import { Input } from "@/shared/ui_shadcn/input";
+import { Textarea } from "@/shared/ui_shadcn/textarea";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/shared/ui_shadcn/select";
+import { Checkbox } from "@/shared/ui_shadcn/checkbox";
+import { ProjectTaskPriority } from "@/types/dto/enums/ProjectTaskPriority";
+import type { TaskStatusColumnDto } from "@/types/dto/tasks/TaskStatusColumnDto";
+
+const schema = z.object({
+    title: z.string().min(1, "Укажите название").max(500),
+    description: z.string().max(4000).optional().or(z.literal("")),
+    projectTaskStatusColumnId: z.string().uuid("Выберите колонку статуса"),
+    priority: z.nativeEnum(ProjectTaskPriority),
+    assigneeId: z.string().optional().nullable(),
+    responsibleId: z.string().optional().nullable(),
+    deadline: z.string().optional().nullable(),
+    watcherIds: z.array(z.string()).optional(),
+});
+
+export type TaskFormValues = z.infer<typeof schema>;
+
+interface MemberOption {
+    id: string;
+    name: string;
+}
+
+interface TaskFormProps {
+    statusColumns: TaskStatusColumnDto[];
+    defaultValues?: Partial<TaskFormValues>;
+    members: MemberOption[];
+    submitLabel: string;
+    onSubmit: (values: TaskFormValues) => Promise<void>;
+    isLoading?: boolean;
+}
+
+export function TaskForm({
+    statusColumns,
+    defaultValues,
+    members,
+    submitLabel,
+    onSubmit,
+    isLoading,
+}: TaskFormProps) {
+    const sortedColumns = [...statusColumns].sort((a, b) => a.sortOrder - b.sortOrder);
+    const firstColumnId = sortedColumns[0]?.id;
+
+    const form = useForm<TaskFormValues>({
+        resolver: zodResolver(schema),
+        defaultValues: {
+            title: "",
+            description: "",
+            projectTaskStatusColumnId: firstColumnId ?? "",
+            priority: ProjectTaskPriority.Medium,
+            assigneeId: null,
+            responsibleId: null,
+            deadline: "",
+            watcherIds: [],
+            ...defaultValues,
+        },
+    });
+
+    return (
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
+                <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Название</FormLabel>
+                            <FormControl>
+                                <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Описание</FormLabel>
+                            <FormControl>
+                                <Textarea rows={5} {...field} value={field.value ?? ""} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                        control={form.control}
+                        name="projectTaskStatusColumnId"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Статус (колонка)</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    disabled={!sortedColumns.length}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Выберите колонку" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {sortedColumns.map((c) => (
+                                            <SelectItem key={c.id} value={c.id}>
+                                                {c.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="priority"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Приоритет</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {Object.values(ProjectTaskPriority).map((p) => (
+                                            <SelectItem key={p} value={p}>
+                                                {p}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <FormField
+                    control={form.control}
+                    name="deadline"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Срок (дата)</FormLabel>
+                            <FormControl>
+                                <Input type="date" {...field} value={field.value ?? ""} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="assigneeId"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Исполнитель</FormLabel>
+                            <Select
+                                onValueChange={(v) => field.onChange(v === "__none__" ? null : v)}
+                                value={field.value ?? "__none__"}
+                            >
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Не назначен" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="__none__">Не назначен</SelectItem>
+                                    {members.map((m) => (
+                                        <SelectItem key={m.id} value={m.id}>
+                                            {m.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="responsibleId"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Ответственный</FormLabel>
+                            <Select
+                                onValueChange={(v) => field.onChange(v === "__none__" ? null : v)}
+                                value={field.value ?? "__none__"}
+                            >
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Не назначен" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="__none__">Не назначен</SelectItem>
+                                    {members.map((m) => (
+                                        <SelectItem key={m.id} value={m.id}>
+                                            {m.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="watcherIds"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Наблюдатели</FormLabel>
+                            <div className="space-y-2 border rounded-md p-3 max-h-48 overflow-y-auto">
+                                {members.map((m) => (
+                                    <div key={m.id} className="flex items-center gap-2">
+                                        <Checkbox
+                                            id={`w-${m.id}`}
+                                            checked={field.value?.includes(m.id)}
+                                            onCheckedChange={(checked) => {
+                                                const next = new Set(field.value ?? []);
+                                                if (checked) next.add(m.id);
+                                                else next.delete(m.id);
+                                                field.onChange([...next]);
+                                            }}
+                                        />
+                                        <label htmlFor={`w-${m.id}`} className="text-sm font-normal">
+                                            {m.name}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <Button type="submit" disabled={isLoading || !sortedColumns.length}>
+                    {submitLabel}
+                </Button>
+            </form>
+        </Form>
+    );
+}

@@ -6,22 +6,19 @@ interface PositionSelectProps {
     onChange: (selectedPositionId?: string) => void;
 }
 
-const mockPositions = [
-    {id: "pos-1", name: "Frontend разработчик"},
-    {id: "pos-2", name: "Backend разработчик"},
-    {id: "pos-3", name: "Project Manager"},
-];
-
 const PositionSelect: FC<PositionSelectProps> = ({selectedPositionId, onChange}) => {
-    const {data: positions = mockPositions} = usePositions();
+    const {data: positions, isLoading, isError} = usePositions();
 
     return (
         <select
             className="border rounded-md p-2 bg-background"
             value={selectedPositionId ?? ""}
             onChange={(e) => onChange(e.target.value)}
+            disabled={isLoading || isError}
         >
-            <option value="">Выберите должность</option>
+            <option value="">
+                {isLoading ? "Загрузка..." : isError ? "Ошибка загрузки" : "Выберите должность"}
+            </option>
             {positions?.map((p) => (
                 <option key={p.id} value={p.id}>
                     {p.name}

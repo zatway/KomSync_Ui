@@ -4,6 +4,20 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/shared/ui_shadcn/avatar";
 import {format, parseISO} from "date-fns";
 import {ru} from "date-fns/locale";
 
+function renderValue(v: unknown) {
+    if (v === null || v === undefined || v === "") {
+        return <span className="text-muted-foreground italic">пусто</span>;
+    }
+    if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
+        return String(v);
+    }
+    try {
+        return JSON.stringify(v);
+    } catch {
+        return String(v);
+    }
+}
+
 export function HistoryEntry({ entry }: { entry: ProjectHistoryEntryDto }) {
     return (
         <Card className="overflow-hidden">
@@ -32,13 +46,13 @@ export function HistoryEntry({ entry }: { entry: ProjectHistoryEntryDto }) {
                     <div>
                         <p className="text-muted-foreground">Было:</p>
                         <p className="mt-1 font-medium break-words">
-                            {entry.oldValue ?? <span className="text-muted-foreground italic">пусто</span>}
+                            {renderValue(entry.oldValue)}
                         </p>
                     </div>
                     <div>
                         <p className="text-muted-foreground">Стало:</p>
                         <p className="mt-1 font-medium break-words">
-                            {entry.newValue ?? <span className="text-muted-foreground italic">пусто</span>}
+                            {renderValue(entry.newValue)}
                         </p>
                     </div>
                 </div>

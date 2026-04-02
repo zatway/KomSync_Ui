@@ -1,11 +1,13 @@
-// src/types/dto/tasks/CreateTaskRequest.ts
+import type { ProjectTaskPriority } from "../enums/ProjectTaskPriority";
+
 export interface CreateTaskRequest {
-    projectId: string;
     title: string;
-    description?: string;
-    status?: "todo" | "in_progress" | "review" | "done" | "blocked"; // по умолчанию "todo"
-    priority?: "low" | "medium" | "high" | "critical";
+    description?: string | null;
+    projectTaskStatusColumnId: string;
+    priority: ProjectTaskPriority;
+    projectId: string;
     assigneeId?: string | null;
-    dueDate?: string | null;
-    labels?: string[];
+    responsibleId?: string | null;
+    deadline?: string | null;
+    watcherUserIds?: string[] | null;
 }

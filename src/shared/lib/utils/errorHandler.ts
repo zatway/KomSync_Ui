@@ -14,7 +14,8 @@ export function errorHandler(
     } else if (typeof error === 'string') {
         message = error;
     } else if (error && typeof error === 'object' && 'message' in error) {
-        message = String((error as any).message);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        message = String((error as { message?: unknown }).message);
     }
 
     const fullMessage = context ? `${context}: ${message}` : message;

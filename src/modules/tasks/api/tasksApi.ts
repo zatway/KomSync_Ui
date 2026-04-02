@@ -1,17 +1,24 @@
-// src/modules/tasks/api/tasksApi.ts
 import { api } from "@/shared/lib";
+import { env } from "@/env";
 import { TaskShortDto } from "@/types/dto/tasks/TaskShortDto";
 import { TaskDetailedDto } from "@/types/dto/tasks/TaskDetailedDto";
 import { CreateTaskRequest } from "@/types/dto/tasks/CreateTaskRequest";
 import { UpdateTaskRequest } from "@/types/dto/tasks/UpdateTaskRequest";
-import { AssignUserRequest } from "@/types/dto/tasks/AssignUserRequest";
 import { ChangeTaskStatusCommand } from "@/types/dto/tasks/ChangeTaskStatusCommand";
+import { AddTaskCommentRequest } from "@/types/dto/taskComments/AddTaskCommentRequest";
+import { UpdateTaskCommentRequest } from "@/types/dto/taskComments/UpdateTaskCommentRequest";
+import { DeleteTaskCommentRequest } from "@/types/dto/taskComments/DeleteTaskCommentRequest";
+
+const taskBase = env.API_TASK_PATH;
+const taskCommentsBase = env.API_TASK_COMMENTS_PATH;
 
 export const tasksApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        // Получить все задачи проекта (для Kanban)
         getTasksByProject: builder.query<TaskShortDto[], string>({
-            query: (projectId) => `/tasks/project/${projectId}`,
+            query: (projectId) => ({
+                url: `${taskBase}/project/${projectId}`,
+                method: "GET",
+            }),
             providesTags: (result, _, projectId) => [
                 { type: "Task", id: "LIST" },
                 { type: "Project", id: projectId },
@@ -19,67 +26,146 @@ export const tasksApi = api.injectEndpoints({
             ],
         }),
 
-        // Детальная задача
         getTaskById: builder.query<TaskDetailedDto, string>({
-            query: (taskId) => `/tasks/${taskId}`,
+            query: (taskId) => ({
+                url: `${taskBase}/${taskId}`,
+                method: "GET",
+            }),
             providesTags: (_, __, id) => [{ type: "Task", id }],
         }),
 
-        // Создать задачу
         createTask: builder.mutation<string, CreateTaskRequest>({
             query: (body) => ({
-                url: "/tasks",
-                method: "POST",
-                body,
+                url: taskBase,
+                method: "PUT",
+                data: {
+                    title: body.title,
+                    description: body.description ?? null,
+                    projectTaskStatusColumnId: body.projectTaskStatusColumnId,
+                    priority: body.priority,
+                    projectId: body.projectId,
+                    assigneeId: body.assigneeId ?? null,
+                    responsibleId: body.responsibleId ?? null,
+                    deadline: body.deadline ?? null,
+                    watcherUserIds: body.watcherUserIds ?? null,
+                },
             }),
-            invalidatesTags: ["Task"],
+            invalidatesTags: (_, __, { projectId }) => [
+                { type: "Task", id: "LIST" },
+                { type: "Project", id: projectId },
+            ],
         }),
 
-        // Обновить задачу (включая drag-n-drop статус/порядок)
         updateTask: builder.mutation<boolean, UpdateTaskRequest>({
             query: (body) => ({
-                url: `/tasks/${body.id}`,
+                url: `${taskBase}/${body.id}`,
                 method: "PATCH",
-                body,
+                data: {
+                    id: body.id,
+                    title: body.title ?? null,
+                    projectTaskStatusColumnId: body.projectTaskStatusColumnId ?? null,
+                    priority: body.priority ?? null,
+                    deadline: body.deadline ?? null,
+                    description: body.description ?? null,
+                    projectId: body.projectId,
+                    parentTaskId: body.parentTaskId ?? null,
+                    responsibleId: body.responsibleId ?? null,
+                    sortOrder: body.sortOrder ?? null,
+                    watcherUserIds: body.watcherUserIds ?? null,
+                },
             }),
-            invalidatesTags: (_, __, { id }) => [{ type: "Task", id }, "Task"],
+            invalidatesTags: (_, __, { id, projectId }) => [
+                { type: "Task", id },
+                { type: "Task", id: "LIST" },
+                { type: "Project", id: projectId },
+            ],
         }),
 
-        // Удалить задачу
-        deleteTask: builder.mutation<boolean, string>({
-            query: (id) => ({
-                url: `/tasks/${id}`,
+        deleteTask: builder.mutation<boolean, { id: string; projectId: string }>({
+            query: ({ id }) => ({
+                url: `${taskBase}/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: ["Task"],
+            invalidatesTags: (_, __, { id, projectId }) => [
+                { type: "Task", id },
+                { type: "Task", id: "LIST" },
+                { type: "Project", id: projectId },
+            ],
         }),
 
-        // Назначить исполнителя
-        assignUser: builder.mutation<boolean, AssignUserRequest>({
+        assignUser: builder.mutation<
+            boolean,
+            { taskId: string; assigneeId: string | null; projectId: string }
+        >({
             query: (body) => ({
-                url: "/tasks/assign",
+                url: `${taskBase}/assign`,
                 method: "POST",
-                body,
+                data: { taskId: body.taskId, assigneeId: body.assigneeId },
             }),
-            invalidatesTags: ["Task"],
+            invalidatesTags: (_, __, { taskId, projectId }) => [
+                { type: "Task", id: taskId },
+                { type: "Task", id: "LIST" },
+                { type: "Project", id: projectId },
+            ],
         }),
 
-        // Изменить статус (используется при drag-n-drop)
         changeTaskStatus: builder.mutation<boolean, ChangeTaskStatusCommand>({
             query: (body) => ({
-                url: "/tasks/status",
+                url: `${taskBase}/status`,
                 method: "POST",
-                body,
+                data: {
+                    taskId: body.taskId,
+                    projectId: body.projectId,
+                    newStatusColumnId: body.newStatusColumnId,
+                    newSortOrder: body.newSortOrder ?? null,
+                },
+            }),
+            invalidatesTags: (_, __, arg) => [
+                { type: "Task", id: arg.taskId },
+                { type: "Task", id: "LIST" },
+                { type: "Project", id: arg.projectId },
+            ],
+        }),
+
+        addTaskComment: builder.mutation<string, AddTaskCommentRequest>({
+            query: (body) => ({
+                url: taskCommentsBase,
+                method: "PUT",
+                data: body,
+            }),
+            invalidatesTags: (_, __, { taskId }) => [{ type: "Task", id: taskId }],
+        }),
+
+        uploadTaskCommentAttachments: builder.mutation<
+            unknown,
+            { commentId: string; files: File[]; taskId: string }
+        >({
+            query: ({ commentId, files }) => {
+                const fd = new FormData();
+                files.forEach((f) => fd.append("files", f));
+                return {
+                    url: `${taskCommentsBase}/${commentId}/attachments`,
+                    method: "POST",
+                    data: fd,
+                };
+            },
+            invalidatesTags: (_, __, { taskId }) => [{ type: "Task", id: taskId }],
+        }),
+
+        updateTaskComment: builder.mutation<boolean, UpdateTaskCommentRequest>({
+            query: (body) => ({
+                url: taskCommentsBase,
+                method: "PATCH",
+                data: body,
             }),
             invalidatesTags: ["Task"],
         }),
 
-        // Переместить задачу внутри колонки или между колонками (порядок)
-        reorderTask: builder.mutation<boolean, { taskId: string; newStatus: string; newOrder: number }>({
-            query: ({ taskId, newStatus, newOrder }) => ({
-                url: `/tasks/${taskId}/reorder`,
-                method: "PATCH",
-                body: { status: newStatus, order: newOrder },
+        deleteTaskComment: builder.mutation<boolean, DeleteTaskCommentRequest>({
+            query: (body) => ({
+                url: taskCommentsBase,
+                method: "DELETE",
+                data: body,
             }),
             invalidatesTags: ["Task"],
         }),
@@ -94,5 +180,8 @@ export const {
     useDeleteTaskMutation,
     useAssignUserMutation,
     useChangeTaskStatusMutation,
-    useReorderTaskMutation,
+    useAddTaskCommentMutation,
+    useUploadTaskCommentAttachmentsMutation,
+    useUpdateTaskCommentMutation,
+    useDeleteTaskCommentMutation,
 } = tasksApi;

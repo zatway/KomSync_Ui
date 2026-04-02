@@ -3,14 +3,12 @@ import { axiosBaseQuery } from './baseQuery'
 
 export const api = createApi({
     reducerPath: 'api',
-
     baseQuery: axiosBaseQuery(),
-
     refetchOnFocus: true,
     refetchOnReconnect: true,
-
     tagTypes: [
         'Auth',
+        'Profile',
         'Project',
         'ProjectHistory',
         'ProjectComment',
@@ -18,9 +16,11 @@ export const api = createApi({
         'TaskComment',
         'Organization',
         'ProjectComments',
+        'TaskStatusColumns',
+        'Admin',
     ],
-
     endpoints: () => ({}),
 })
 
 export default api
+

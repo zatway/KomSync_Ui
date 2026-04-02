@@ -1,18 +1,14 @@
-import {Avatar, AvatarFallback} from "@/shared/ui_shadcn/avatar";
-import {Button} from "@/shared/ui_shadcn/button";
 import {useLogoutMutation} from "@/modules/auth/api/authApi";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from "@/shared/ui_shadcn/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "@/shared/ui_shadcn/dropdown-menu";
 import {ThemeToggle} from "@/shared/ui";
 import {ProfileInfo} from "@/modules/profile";
+import { useNavigate } from "react-router-dom";
+import { AppRoutes } from "@/app/routes/AppRoutes";
 
 const Header = () => {
 
     const [logout] = useLogoutMutation();
+    const navigate = useNavigate();
 
     return (
         <header
@@ -32,7 +28,9 @@ const Header = () => {
 
                 <DropdownMenuContent align="end" className={"bg-background"}>
                     <DropdownMenuItem>
-                        Профиль
+                        <button type="button" className="w-full text-left" onClick={() => navigate(AppRoutes.PROFILE)}>
+                            Профиль
+                        </button>
                     </DropdownMenuItem>
 
                     <DropdownMenuItem

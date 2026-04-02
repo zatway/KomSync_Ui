@@ -1,7 +1,6 @@
 import {UserRole} from "@/types/dto/enums/UserRole";
 import {TokenResponse} from "@/types/dto/auth/TokenResponse";
 import { localStorageCore } from "../storageHelper/localStorageCore";
-import {RefreshTokenResponse} from "@/types/dto/auth/RefreshTokenResponse";
 
 const TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
@@ -42,9 +41,9 @@ export const authLocalService = {
             localStorageCore.setItem(key, value);
         });
     },
-    setRefreshData: (refreshData: RefreshTokenResponse) => {
-        localStorageCore.setItem(TOKEN_EXPIRED_UTC_KEY, refreshData.expiredTime);
-        localStorageCore.setItem(REFRESH_TOKEN_KEY, refreshData.refreshToken);
+    setRefreshData: (data: Pick<TokenResponse, "refreshToken" | "refreshTokenExpiredAt">) => {
+        localStorageCore.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+        localStorageCore.setItem(REFRESH_TOKEN_EXPIRED_UTC_KEY, String(data.refreshTokenExpiredAt));
     },
     clearTokenData: (): void => {
         keys.forEach((key) => {

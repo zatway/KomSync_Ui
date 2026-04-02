@@ -8,5 +8,5 @@ export interface TaskHistoryDto {
     oldValue: string;
     newValue: string;
     action: TaskHistoryAction;
-    changedAt: Date;
+    changedAt: string;
 }

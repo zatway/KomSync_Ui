@@ -1,6 +1,6 @@
-import {ProjectTaskStatus} from "../enums/ProjectTaskStatus.ts";
-
 export interface ChangeTaskStatusCommand {
     taskId: string;
-    newStatus: ProjectTaskStatus;
+    projectId: string;
+    newStatusColumnId: string;
+    newSortOrder?: number | null;
 }

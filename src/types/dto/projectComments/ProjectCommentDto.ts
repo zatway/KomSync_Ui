@@ -1,3 +1,5 @@
+import type { CommentAttachmentDto } from "../attachments/CommentAttachmentDto";
+
 export interface ProjectCommentDto {
     id: string;
     projectId: string;
@@ -12,4 +14,5 @@ export interface ProjectCommentDto {
     updatedAt?: string;           // ISO, если редактировался
     parentId?: string;            // для ответов (null = корневой комментарий)
     replies?: ProjectCommentDto[];   // вложенные ответы (опционально загружаются отдельно)
+    attachments?: CommentAttachmentDto[];
 }

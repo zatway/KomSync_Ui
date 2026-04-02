@@ -1,19 +1,26 @@
-// src/types/dto/tasks/TaskShortDto.ts
+import type { ProjectTaskPriority } from "../enums/ProjectTaskPriority";
+import type { TaskStatusColumnDto } from "./TaskStatusColumnDto";
+
+export interface TaskAssigneeDto {
+    id: string;
+    name: string;
+    avatarUrl?: string | null;
+}
+
 export interface TaskShortDto {
-    id: string;                     // UUID
-    key: string;                    // Например: MOBAPP-123
-    title: string;                  // Короткое название задачи
-    description?: string;           // Краткое описание (1–2 строки)
-    status: "todo" | "in_progress" | "review" | "done" | "blocked"; // статус = колонка на доске
-    priority?: "low" | "medium" | "high" | "critical";
-    assignee?: {
-        id: string;
-        name: string;
-        avatarUrl?: string;
-    } | null;
-    dueDate?: string;               // ISO дата
+    id: string;
+    key: string;
+    title: string;
+    description?: string | null;
+    status: TaskStatusColumnDto;
+    priority: ProjectTaskPriority;
     projectId: string;
-    order: number;                  // порядок внутри колонки (для сортировки)
+    creatorId: string;
     createdAt: string;
-    updatedAt: string;
+    updatedAt?: string | null;
+    deadline?: string | null;
+    taskNumber: number;
+    sortOrder: number;
+    assignee?: TaskAssigneeDto | null;
+    responsible?: TaskAssigneeDto | null;
 }

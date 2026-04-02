@@ -1,0 +1,77 @@
+﻿import { useParams, useNavigate } from 'react-router-dom'
+import { useGetProjectByIdQuery, useGetProjectTaskStatusColumnsQuery } from '@/modules/projects/api/projectsApi'
+import { useGetTaskByIdQuery, useUpdateTaskMutation, useAssignUserMutation } from '@/modules/tasks/api/tasksApi'
+import { TaskForm, TaskFormValues } from '@/modules/tasks/components/TaskForm'
+import { AppRoutes } from '@/app/routes/AppRoutes'
+import { Button } from '@/shared/ui_shadcn/button'
+import { ArrowLeft } from 'lucide-react'
+import { toast } from 'sonner'
+import { format, parseISO } from 'date-fns'
+
+export default function TaskEditPage() {
+    const { projectId, taskId } = useParams<{ projectId: string; taskId: string }>()
+    const navigate = useNavigate()
+    const { data: project } = useGetProjectByIdQuery(projectId!, { skip: !projectId })
+    const { data: statusColumns = [] } = useGetProjectTaskStatusColumnsQuery(projectId!, { skip: !projectId })
+    const { data: task, isLoading: taskLoading } = useGetTaskByIdQuery(taskId!, { skip: !taskId })
+    const [updateTask, { isLoading }] = useUpdateTaskMutation()
+    const [assignUser] = useAssignUserMutation()
+    const members = project?.members?.map((m) => ({ id: m.id, name: m.name })) ?? []
+
+    const onSubmit = async (values: TaskFormValues) => {
+        if (!projectId || !taskId) return
+        const deadline = values.deadline ? `${values.deadline}T12:00:00.000Z` : null
+        try {
+            await updateTask({
+                id: taskId,
+                projectId,
+                title: values.title,
+                description: values.description || undefined,
+                projectTaskStatusColumnId: values.projectTaskStatusColumnId,
+                priority: values.priority,
+                deadline,
+                responsibleId: values.responsibleId,
+                watcherUserIds: values.watcherIds ?? [],
+            }).unwrap()
+            const prevAssignee = task?.assignee?.id ?? null
+            const nextAssignee = values.assigneeId ?? null
+            if (prevAssignee !== nextAssignee) {
+                await assignUser({ taskId, assigneeId: nextAssignee, projectId }).unwrap()
+            }
+            toast.success('Задача сохранена')
+            navigate(`${AppRoutes.TASKS}/${projectId}/detail/${taskId}`)
+        } catch { toast.error('Не удалось сохранить задачу') }
+    }
+
+    if (!projectId || !taskId) return null
+    const deadlineStr = task?.deadline ? format(parseISO(task.deadline), 'yyyy-MM-dd') : ''
+
+    return (
+        <div className='container mx-auto py-8 px-4 max-w-3xl'>
+            <Button variant='ghost' className='mb-6' onClick={() => navigate(-1)}><ArrowLeft className='mr-2 h-4 w-4' />Назад</Button>
+            <h1 className='text-2xl font-bold mb-6'>Редактирование задачи</h1>
+            {taskLoading && <p className='text-muted-foreground'>Загрузка…</p>}
+            {task && (
+                <TaskForm
+                    key={task.id}
+                    statusColumns={statusColumns}
+                    members={members}
+                    submitLabel='Сохранить'
+                    onSubmit={onSubmit}
+                    isLoading={isLoading}
+                    defaultValues={{
+                        title: task.title,
+                        description: task.description ?? '',
+                        projectTaskStatusColumnId: task.status.id,
+                        priority: task.priority,
+                        assigneeId: task.assignee?.id ?? null,
+                        responsibleId: task.responsible?.id ?? null,
+                        deadline: deadlineStr,
+                        watcherIds: task.watchers.map((w) => w.id),
+                    }}
+                />
+            )}
+        </div>
+    )
+}
+

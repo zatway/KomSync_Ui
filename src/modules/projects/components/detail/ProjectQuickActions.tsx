@@ -15,13 +15,13 @@ export function ProjectQuickActions({ projectId }: Props) {
             <ActionButton
                 icon={<FolderKanban className="h-8 w-8" />}
                 title="Доска задач"
-                onClick={() => window.location.href = `${AppRoutes.TASKS}/${projectId}/${AppRoutes.TASKS_DASHBOARD}`}
+                onClick={() => navigate(`${AppRoutes.TASKS}/${projectId}`)}
                 color="bg-blue-500/10 hover:bg-blue-500/20 text-blue-600"
             />
             <ActionButton
                 icon={<ListTodo className="h-8 w-8" />}
                 title="Таблица задач"
-                onClick={() => window.location.href = `${AppRoutes.PROJECTS}/${projectId}/table`}
+                onClick={() => navigate(`${AppRoutes.PROJECTS}/${projectId}/table`)}
                 color="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600"
             />
             <ActionButton

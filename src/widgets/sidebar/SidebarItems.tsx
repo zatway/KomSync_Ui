@@ -1,27 +1,20 @@
-import { BookOpen, CheckSquare, FolderKanban, ListTodo, Settings, Shield } from "lucide-react";
+import { BookOpen, Shield } from "lucide-react";
 import { AppRoutes } from "@/app/routes/AppRoutes";
+import type { LucideIcon } from "lucide-react";
 
 export type SidebarItem = {
     label: string;
-    icon?: any;           // LucideIcon
-    path?: string;       // если есть — прямая ссылка (как База знаний)
-    children?: SidebarItem[]; // вложенные пункты
+    icon?: LucideIcon;
+    path?: string;
+    children?: SidebarItem[];
 };
 
+/** Проекты и доски задач вынесены в AccordionProjectsItem (динамический список). */
 export const sidebarItems: SidebarItem[] = [
     {
         label: "База знаний",
         icon: BookOpen,
         path: AppRoutes.KNOWLEDGE,
-    },
-    {
-        label: "Доска задач",
-        icon: CheckSquare,
-        children: [
-            // Здесь можно динамически подгружать проекты из API
-            { label: "Проект А", path: `${AppRoutes.TASKS_DASHBOARD}/project-a` },
-            { label: "Проект Б", path: `${AppRoutes.TASKS_DASHBOARD}/project-b` },
-        ],
     },
     {
         label: "Админка",

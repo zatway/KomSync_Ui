@@ -63,5 +63,5 @@ export interface ProjectDetailedDto {
         canViewHistory: boolean;
     };
 
-    customFields?: Record<string, any>; // для кастомных полей компании
+    customFields?: Record<string, unknown>; // для кастомных полей компании
 }

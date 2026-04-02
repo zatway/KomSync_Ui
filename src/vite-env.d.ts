@@ -2,20 +2,41 @@ export type Env = {
     VITE_API_BASE_URL_SIGNALR_HUB: string;
     VITE_API_BASE_URL: string;
 
-    AUTH_URL: string;
-    AUTH_LOGIN_URL: string;
-    AUTH_REGISTER_URL: string;
-    AUTH_LOGOUT_URL: string;
-    AUTH_REFRESH_URL: string;
+    /** Сегменты API относительно `VITE_API_BASE_URL` (начинаются с `/`). */
+    API_AUTH_PATH: string;
+    API_PROJECTS_PATH: string;
+    API_TASK_PATH: string;
+    API_TASK_COMMENTS_PATH: string;
+    API_ADMIN_PATH: string;
+    API_ORGANIZATION_PATH: string;
+    API_PROFILE_PATH: string;
 
-    PROJECTS_URL: string;
-    PROJECTS_HISTORY_URL: string;
-    PROJECTS_COMMENTS_URL: string;
+    API_DEPARTMENTS_PATH: string;
+    API_POSITIONS_PATH: string;
 
-    PROFILE_URL: string;
-    PROFILE_ME_AVATAR_URL: string;
-    PROFILE_ME_URL: string;
-    PROFILE_UPDATE_PROFILE_URL: string;
+    PROJECT_TASK_STATUS_COLUMNS_SUFFIX: string;
+    PROJECTS_HISTORY_SUFFIX: string;
+    PROJECTS_COMMENTS_SUFFIX: string;
+    PROJECT_COMMENT_BY_ID_PREFIX: string;
+
+    PROFILE_ME_SUFFIX: string;
+    PROFILE_ME_AVATAR_SUFFIX: string;
+    PROFILE_UPDATE_SUFFIX: string;
+
+    /** Маршруты SPA (без хоста). */
+    ROUTE_LOGIN: string;
+    ROUTE_REGISTER: string;
+    ROUTE_PROJECTS: string;
+    ROUTE_PROJECT_CREATE: string;
+    ROUTE_TASKS: string;
+    ROUTE_KNOWLEDGE: string;
+    ROUTE_ADMIN: string;
+    ROUTE_PROFILE: string;
+
+    AUTH_REGISTER_REL: string;
+    AUTH_LOGIN_REL: string;
+    AUTH_LOGOUT_REL: string;
+    AUTH_REFRESH_REL: string;
 };
 
 export {};

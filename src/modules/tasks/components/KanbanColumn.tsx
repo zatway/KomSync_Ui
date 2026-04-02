@@ -2,12 +2,14 @@ import { useDroppable } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { cn } from "@/shared/lib/ui_shadcn/utils"
 import { ColumnHeader } from "./ColumnHeader"
+import type { TaskShortDto } from "@/types/dto/tasks/TaskShortDto"
+import type { ReactNode } from "react"
 
 interface KanbanColumnProps {
     id: string
     title: string
-    tasks: any[] // TaskShortDto[]
-    children: React.ReactNode
+    tasks: TaskShortDto[]
+    children: ReactNode
     color?: "blue" | "purple" | "amber" | "emerald" | "slate"
 }
 

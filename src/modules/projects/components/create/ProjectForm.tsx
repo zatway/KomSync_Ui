@@ -73,8 +73,8 @@ export default function ProjectForm({
             if(!createdId) throw new Error();
             toast.success("Проект успешно создан");
             navigate(`${AppRoutes.PROJECTS}/${createdId}`);
-        } catch (err: any) {
-            toast.error(err?.data?.message || "Не удалось создать проект");
+        } catch {
+            toast.error("Не удалось создать проект");
         }
     };
 
