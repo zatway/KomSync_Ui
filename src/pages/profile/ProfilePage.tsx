@@ -7,6 +7,7 @@ import { Button } from "@/shared/ui_shadcn/button";
 import { Input } from "@/shared/ui_shadcn/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui_shadcn/avatar";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/shared/lib";
 
 export default function ProfilePage() {
     const { data: user } = useGetMeInfoQuery();
@@ -37,8 +38,8 @@ export default function ProfilePage() {
         try {
             await updateProfile({ avatarFile: file }).unwrap();
             toast.success("Аватар обновлён");
-        } catch {
-            toast.error("Не удалось обновить аватар");
+        } catch (e) {
+            toast.error(getApiErrorMessage(e));
         }
     };
 
@@ -46,8 +47,8 @@ export default function ProfilePage() {
         try {
             await updateProfile({ isDeletedAvatar: true }).unwrap();
             toast.success("Аватар удалён");
-        } catch {
-            toast.error("Не удалось удалить аватар");
+        } catch (e) {
+            toast.error(getApiErrorMessage(e));
         }
     };
 

@@ -63,7 +63,7 @@ export const projectsApi = api.injectEndpoints({
             invalidatesTags: ["Project"],
         }),
 
-        updateProject: builder.mutation<boolean, UpdateProjectRequest & { id: string }>({
+        updateProject: builder.mutation<void, UpdateProjectRequest & { id: string }>({
             query: ({ id, ...data }) => ({
                 url: getUrl(`/${id}`),
                 method: "PATCH",
@@ -72,7 +72,7 @@ export const projectsApi = api.injectEndpoints({
             invalidatesTags: (_, __, { id }) => [{ type: "Project", id }, "Project"],
         }),
 
-        deleteProject: builder.mutation<boolean, string>({
+        deleteProject: builder.mutation<void, string>({
             query: (id) => ({
                 url: getUrl(`/${id}`),
                 method: "DELETE",
@@ -134,7 +134,7 @@ export const projectsApi = api.injectEndpoints({
         }),
 
         updateProjectComment: builder.mutation<
-            boolean,
+            void,
             { id: string; data: UpdateProjectCommentRequest }
         >({
             query: ({ id, data }) => ({

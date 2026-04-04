@@ -11,6 +11,8 @@ import {Checkbox} from "@/shared/ui_shadcn/checkbox";
 import DepartmentSelect from "@/modules/organization/components/DepartmentSelect";
 import PositionSelect from "@/modules/organization/components/PositionSelect";
 import {AppRoutes} from "@/app/routes/AppRoutes";
+import { getApiErrorMessage } from "@/shared/lib";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
     const navigate = useNavigate();
@@ -50,7 +52,7 @@ const RegisterForm = () => {
             }, 4000);
 
         } catch (err) {
-            console.error("Ошибка регистрации:", err);
+            toast.error(getApiErrorMessage(err));
         }
     };
 

@@ -2,7 +2,8 @@ import {BaseQueryFn} from '@reduxjs/toolkit/query'
 import type {AxiosRequestConfig, AxiosError} from 'axios'
 
 import axios from 'axios'
-import {env} from "@/env";
+import { env } from '@/env'
+import { authLocalService } from '@/shared/lib/localStorageService/authLocalService'
 
 export const axiosInstance = axios.create({
     baseURL: env.VITE_API_BASE_URL,
@@ -66,8 +67,7 @@ export const axiosBaseQuery =
                 const error = err as AxiosError
 
                 if (error.response?.status === 401) {
-                    localStorage.removeItem('token')
-                    // dispatch(logout())
+                    authLocalService.clearTokenData()
                 }
 
                 return {

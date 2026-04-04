@@ -1,4 +1,5 @@
 export * from './api/api';
+export { getApiErrorMessage, getApiValidationErrors } from './api/parseApiError';
 
 // utils
 export {hasValue} from './utils/hasValue';

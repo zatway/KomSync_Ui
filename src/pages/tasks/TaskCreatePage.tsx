@@ -1,4 +1,4 @@
-﻿import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useGetProjectByIdQuery, useGetProjectTaskStatusColumnsQuery } from '@/modules/projects/api/projectsApi'
 import { useCreateTaskMutation } from '@/modules/tasks/api/tasksApi'
 import { TaskForm, TaskFormValues } from '@/modules/tasks/components/TaskForm'
@@ -6,6 +6,7 @@ import { AppRoutes } from '@/app/routes/AppRoutes'
 import { Button } from '@/shared/ui_shadcn/button'
 import { ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
+import { getApiErrorMessage } from '@/shared/lib'
 import { ProjectTaskPriority } from '@/types/dto/enums/ProjectTaskPriority'
 
 export default function TaskCreatePage() {
@@ -34,7 +35,7 @@ export default function TaskCreatePage() {
             }).unwrap()
             toast.success('Задача создана')
             navigate(`${AppRoutes.TASKS}/${projectId}/detail/${id}`)
-        } catch { toast.error('Не удалось создать задачу') }
+        } catch (e) { toast.error(getApiErrorMessage(e)) }
     }
 
     if (!projectId) return null

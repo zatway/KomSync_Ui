@@ -150,8 +150,16 @@ export function ProjectsTable() {
                 },
             },
         ],
-        [navigate]
+        [navigate, deleteProject]
     );
+
+    const table = useReactTable({
+        data: projects ?? [],
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+    });
 
     if (isLoading) {
         return (
@@ -169,14 +177,6 @@ export function ProjectsTable() {
             </div>
         );
     }
-
-    const table = useReactTable({
-        data: projects,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-    });
 
     return (
         <div className="overflow-x-auto">

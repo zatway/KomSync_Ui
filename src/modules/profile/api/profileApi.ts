@@ -22,7 +22,7 @@ export const profileApi = api.injectEndpoints({
             providesTags: ['Profile'],
         }),
         updateProfile: builder.mutation<
-            boolean,
+            void,
             {
                 avatarFile?: File | null
                 fullName?: string | null

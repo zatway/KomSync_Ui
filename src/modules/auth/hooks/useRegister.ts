@@ -42,6 +42,21 @@ export const useRegister = () => {
             return false;
         }
 
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email.trim())) {
+            setErrorValidation("Некорректный email");
+            return false;
+        }
+
+        if (!registerData.departmentId) {
+            setErrorValidation("Выберите подразделение");
+            return false;
+        }
+
+        if (!registerData.positionId) {
+            setErrorValidation("Выберите должность");
+            return false;
+        }
+
         if (!registerData.password) {
             setErrorValidation("Введите пароль");
             return false;

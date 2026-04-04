@@ -1,4 +1,4 @@
-﻿import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useGetProjectByIdQuery, useGetProjectTaskStatusColumnsQuery } from '@/modules/projects/api/projectsApi'
 import { useGetTaskByIdQuery, useUpdateTaskMutation, useAssignUserMutation } from '@/modules/tasks/api/tasksApi'
 import { TaskForm, TaskFormValues } from '@/modules/tasks/components/TaskForm'
@@ -6,6 +6,7 @@ import { AppRoutes } from '@/app/routes/AppRoutes'
 import { Button } from '@/shared/ui_shadcn/button'
 import { ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
+import { getApiErrorMessage } from '@/shared/lib'
 import { format, parseISO } from 'date-fns'
 
 export default function TaskEditPage() {
@@ -40,7 +41,7 @@ export default function TaskEditPage() {
             }
             toast.success('Задача сохранена')
             navigate(`${AppRoutes.TASKS}/${projectId}/detail/${taskId}`)
-        } catch { toast.error('Не удалось сохранить задачу') }
+        } catch (e) { toast.error(getApiErrorMessage(e)) }
     }
 
     if (!projectId || !taskId) return null

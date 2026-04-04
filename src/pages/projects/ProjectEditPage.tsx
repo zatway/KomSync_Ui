@@ -4,6 +4,7 @@ import { ProjectEditHeader, ProjectForm } from "@/modules/projects";
 import { useParams } from "react-router-dom";
 import { useGetProjectByIdQuery, useUpdateProjectMutation } from "@/modules/projects/api/projectsApi";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/shared/lib";
 import {UpdateProjectRequest} from "@/types/dto/projects/UpdateProjectRequest";
 
 export default function ProjectEditPage() {
@@ -26,7 +27,7 @@ export default function ProjectEditPage() {
             toast.success("Проект обновлён");
             return projectId!
         } catch (err) {
-            toast.error("Не удалось обновить проект");
+            toast.error(getApiErrorMessage(err));
         }
     };
 

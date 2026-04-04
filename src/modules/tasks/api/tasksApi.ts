@@ -56,7 +56,7 @@ export const tasksApi = api.injectEndpoints({
             ],
         }),
 
-        updateTask: builder.mutation<boolean, UpdateTaskRequest>({
+        updateTask: builder.mutation<void, UpdateTaskRequest>({
             query: (body) => ({
                 url: `${taskBase}/${body.id}`,
                 method: "PATCH",
@@ -81,7 +81,7 @@ export const tasksApi = api.injectEndpoints({
             ],
         }),
 
-        deleteTask: builder.mutation<boolean, { id: string; projectId: string }>({
+        deleteTask: builder.mutation<void, { id: string; projectId: string }>({
             query: ({ id }) => ({
                 url: `${taskBase}/${id}`,
                 method: "DELETE",
@@ -94,7 +94,7 @@ export const tasksApi = api.injectEndpoints({
         }),
 
         assignUser: builder.mutation<
-            boolean,
+            void,
             { taskId: string; assigneeId: string | null; projectId: string }
         >({
             query: (body) => ({
@@ -109,7 +109,7 @@ export const tasksApi = api.injectEndpoints({
             ],
         }),
 
-        changeTaskStatus: builder.mutation<boolean, ChangeTaskStatusCommand>({
+        changeTaskStatus: builder.mutation<void, ChangeTaskStatusCommand>({
             query: (body) => ({
                 url: `${taskBase}/status`,
                 method: "POST",
@@ -152,7 +152,7 @@ export const tasksApi = api.injectEndpoints({
             invalidatesTags: (_, __, { taskId }) => [{ type: "Task", id: taskId }],
         }),
 
-        updateTaskComment: builder.mutation<boolean, UpdateTaskCommentRequest>({
+        updateTaskComment: builder.mutation<void, UpdateTaskCommentRequest>({
             query: (body) => ({
                 url: taskCommentsBase,
                 method: "PATCH",
@@ -161,7 +161,7 @@ export const tasksApi = api.injectEndpoints({
             invalidatesTags: ["Task"],
         }),
 
-        deleteTaskComment: builder.mutation<boolean, DeleteTaskCommentRequest>({
+        deleteTaskComment: builder.mutation<void, DeleteTaskCommentRequest>({
             query: (body) => ({
                 url: taskCommentsBase,
                 method: "DELETE",

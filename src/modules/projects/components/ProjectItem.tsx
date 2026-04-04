@@ -14,14 +14,16 @@ import {cn} from "@/shared/lib/ui_shadcn/utils";
 
 interface ProjectItemProps {
     project: ProjectBriefDto;
-    isCollapsed?: boolean;           // если сайдбар свёрнут
-    onSelect?: (projectId: string) => void; // опционально для controlled поведения
+    isCollapsed?: boolean;
+    onSelect?: (projectId: string) => void;
+    onNavigate?: () => void;
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({
                                                project,
                                                isCollapsed = false,
                                                onSelect,
+                                               onNavigate,
                                            }) => {
     const location = useLocation();
     const projectPath = `${AppRoutes.PROJECTS}/${project.id}`;
@@ -33,7 +35,10 @@ const ProjectItem: FC<ProjectItemProps> = ({
         <div className="relative group">
             <NavLink
                 to={projectPath}
-                onClick={() => onSelect?.(project.id)}
+                onClick={() => {
+                    onSelect?.(project.id)
+                    onNavigate?.()
+                }}
                 className={({ isActive: linkActive }) =>
                     cn(
                         "flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors",
@@ -84,13 +89,13 @@ const ProjectItem: FC<ProjectItemProps> = ({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem asChild>
-                            <NavLink to={`${AppRoutes.TASKS}/${project.id}`}>Открыть доску</NavLink>
+                            <NavLink to={`${AppRoutes.TASKS}/${project.id}`} onClick={onNavigate}>Открыть доску</NavLink>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <NavLink to={`${projectPath}/table`}>Таблица задач</NavLink>
+                            <NavLink to={`${projectPath}/table`} onClick={onNavigate}>Таблица задач</NavLink>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <NavLink to={`${projectPath}/edit`}>Настройки проекта</NavLink>
+                            <NavLink to={`${projectPath}/edit`} onClick={onNavigate}>Настройки проекта</NavLink>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

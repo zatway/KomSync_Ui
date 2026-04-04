@@ -1,4 +1,5 @@
 import {useForm} from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {format} from "date-fns";
 import {ru} from "date-fns/locale";
@@ -24,6 +25,7 @@ import {
 import {Calendar} from "@/shared/ui_shadcn/calendar";
 import {cn} from "@/shared/lib/ui_shadcn/utils";
 import {toast} from "sonner";
+import { getApiErrorMessage } from "@/shared/lib";
 import {AppRoutes} from "@/app/routes/AppRoutes";
 import {useNavigate} from "react-router-dom";
 import {DepartmentSelect} from "@/modules/organization";
@@ -39,7 +41,10 @@ const projectCreateSchema = z.object({
     description: z.string().max(2000, "Описание слишком длинное").optional(),
     startDate: z.date().optional(),
     dueDate: z.date().optional(),
-    color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).optional(),
+    color: z
+        .string()
+        .regex(/^#([A-Fa-f0-9]{6})$/, "Цвет в формате #RRGGBB")
+        .optional(),
     icon: z.string().max(2).optional(),
     tags: z.array(z.string()).optional(),
 }).refine(
@@ -73,12 +78,14 @@ export default function ProjectForm({
             if(!createdId) throw new Error();
             toast.success("Проект успешно создан");
             navigate(`${AppRoutes.PROJECTS}/${createdId}`);
-        } catch {
-            toast.error("Не удалось создать проект");
+        } catch (e) {
+            toast.error(getApiErrorMessage(e));
         }
     };
 
     const form = useForm<ProjectFormValues>({
+        resolver: zodResolver(projectCreateSchema),
+        mode: "onTouched",
         defaultValues: {
             name: "",
             departmentId: "",
