@@ -30,6 +30,11 @@ export type Env = {
     ROUTE_PROJECT_CREATE: string;
     ROUTE_TASKS: string;
     ROUTE_KNOWLEDGE: string;
+    ROUTE_KNOWLEDGE_ARTICLE: string;
+    ROUTE_SEARCH: string;
+    ROUTE_ANALYTICS: string;
+    ROUTE_FORGOT_PASSWORD: string;
+    ROUTE_RESET_PASSWORD: string;
     ROUTE_ADMIN: string;
     ROUTE_PROFILE: string;
 

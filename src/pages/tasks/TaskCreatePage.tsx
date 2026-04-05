@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useGetProjectByIdQuery, useGetProjectTaskStatusColumnsQuery } from '@/modules/projects/api/projectsApi'
 import { useCreateTaskMutation } from '@/modules/tasks/api/tasksApi'
-import { TaskForm, TaskFormValues } from '@/modules/tasks/components/TaskForm'
+import { TaskForm, type TaskFormValues } from '@/modules/tasks'
 import { AppRoutes } from '@/app/routes/AppRoutes'
 import { Button } from '@/shared/ui_shadcn/button'
 import { ArrowLeft } from 'lucide-react'

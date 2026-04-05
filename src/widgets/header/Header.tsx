@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { AppRoutes } from "@/app/routes/AppRoutes";
 import { Button } from "@/shared/ui_shadcn/button";
 import { Menu } from "lucide-react";
+import { NotificationsBell } from "@/widgets/header/NotificationsBell";
 
 type Props = {
     onOpenMobileNav?: () => void;
@@ -34,6 +35,7 @@ const Header = ({ onOpenMobileNav }: Props) => {
                 </Button>
             </div>
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                <NotificationsBell />
                 <ThemeToggle />
                 <DropdownMenu>
                     <ProfileInfo />

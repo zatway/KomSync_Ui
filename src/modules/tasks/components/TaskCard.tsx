@@ -1,16 +1,16 @@
-import type { CSSProperties } from "react";
-import { TaskShortDto } from "@/types/dto/tasks/TaskShortDto";
-import { Card, CardContent } from "@/shared/ui_shadcn/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui_shadcn/avatar";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Calendar, AlertCircle } from "lucide-react";
-import { format, parseISO, isPast } from "date-fns";
-import { ru } from "date-fns/locale";
-import { cn } from "@/shared/lib/ui_shadcn/utils";
-import { useNavigate } from "react-router-dom";
-import { AppRoutes } from "@/app/routes/AppRoutes";
-import { ProjectTaskPriority } from "@/types/dto/enums/ProjectTaskPriority";
+import type {CSSProperties} from "react";
+import {TaskShortDto} from "@/types/dto/tasks/TaskShortDto";
+import {Card, CardContent} from "@/shared/ui_shadcn/card";
+import {Avatar, AvatarFallback, AvatarImage} from "@/shared/ui_shadcn/avatar";
+import {useSortable} from "@dnd-kit/sortable";
+import {CSS} from "@dnd-kit/utilities";
+import {Calendar, AlertCircle} from "lucide-react";
+import {format, parseISO, isPast} from "date-fns";
+import {ru} from "date-fns/locale";
+import {cn} from "@/shared/lib/ui_shadcn/utils";
+import {useNavigate} from "react-router-dom";
+import {AppRoutes} from "@/app/routes/AppRoutes";
+import {ProjectTaskPriority} from "@/types/dto/enums/ProjectTaskPriority";
 
 const priorityClass: Record<ProjectTaskPriority, string> = {
     [ProjectTaskPriority.Critical]: "bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300",
@@ -27,7 +27,7 @@ type ContentProps = {
 };
 
 /** Только разметка — без dnd-хуков (для DragOverlay и переиспользования). */
-function TaskCardContent({ task, projectId, overlayStyle }: ContentProps) {
+function TaskCardContent({task, projectId, overlayStyle}: ContentProps) {
     const navigate = useNavigate();
     const due = task.deadline;
     const isOverdue = due && isPast(parseISO(due));
@@ -42,20 +42,20 @@ function TaskCardContent({ task, projectId, overlayStyle }: ContentProps) {
                 "shadow-sm",
                 overlayStyle && "opacity-95 scale-[1.02] shadow-2xl ring-2 ring-primary/20 cursor-grabbing"
             )}
+            onDoubleClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openTask();
+            }}
+            onKeyDown={(e) => {
+                if (e.key === "Enter") openTask();
+            }}
         >
             <CardContent className="p-3 sm:p-4 space-y-2 sm:space-y-3">
                 <div
                     className="flex-1 min-w-0 space-y-1"
-                    onDoubleClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        openTask();
-                    }}
                     role="button"
                     tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") openTask();
-                    }}
                 >
                     <div className="font-medium line-clamp-2">{task.title}</div>
                 </div>
@@ -75,7 +75,7 @@ function TaskCardContent({ task, projectId, overlayStyle }: ContentProps) {
 
                     {task.assignee && (
                         <Avatar className="h-6 w-6 shrink-0">
-                            <AvatarImage src={task.assignee.avatarUrl ?? undefined} />
+                            <AvatarImage src={task.assignee.avatarUrl ?? undefined}/>
                             <AvatarFallback>{task.assignee.name[0]}</AvatarFallback>
                         </Avatar>
                     )}
@@ -83,11 +83,11 @@ function TaskCardContent({ task, projectId, overlayStyle }: ContentProps) {
 
                 {due && (
                     <div className="flex items-center gap-1.5 text-[11px] sm:text-xs">
-                        <Calendar className="h-3.5 w-3.5 shrink-0" />
+                        <Calendar className="h-3.5 w-3.5 shrink-0"/>
                         <span className={cn(isOverdue && "text-destructive")}>
-                            {format(parseISO(due), "d MMM", { locale: ru })}
+                            {format(parseISO(due), "d MMM", {locale: ru})}
                         </span>
-                        {isOverdue && <AlertCircle className="h-3.5 w-3.5 text-destructive shrink-0" />}
+                        {isOverdue && <AlertCircle className="h-3.5 w-3.5 text-destructive shrink-0"/>}
                     </div>
                 )}
             </CardContent>
@@ -104,8 +104,8 @@ interface SortableProps {
  * Сортатируемая карточка: ref + listeners на нативном div (shadcn Card не forwardRef — ref на Card не работал).
  * @see https://docs.dndkit.com/presets/sortable#usesortable
  */
-export function TaskCard({ task, projectId }: SortableProps) {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+export function TaskCard({task, projectId}: SortableProps) {
+    const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
         id: task.id,
     });
 
@@ -126,12 +126,12 @@ export function TaskCard({ task, projectId }: SortableProps) {
             {...attributes}
             {...listeners}
         >
-            <TaskCardContent task={task} projectId={projectId} />
+            <TaskCardContent task={task} projectId={projectId}/>
         </div>
     );
 }
 
 /** Превью в DragOverlay — без второго useSortable с тем же id. */
-export function TaskCardDragOverlay({ task, projectId }: SortableProps) {
-    return <TaskCardContent task={task} projectId={projectId} overlayStyle />;
+export function TaskCardDragOverlay({task, projectId}: SortableProps) {
+    return <TaskCardContent task={task} projectId={projectId} overlayStyle/>;
 }

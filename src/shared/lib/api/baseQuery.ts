@@ -14,11 +14,11 @@ export const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.request.use(config => {
-    const token = localStorage.getItem('accessToken')
+    const token = authLocalService.getToken()
 
     if (token) {
         config.headers = config.headers ?? {}
-        config.headers.Authorization = `Bearer ${JSON.parse(token)}`
+        config.headers.Authorization = `Bearer ${token}`
     }
 
     // Let axios set proper Content-Type for multipart/form-data
@@ -66,7 +66,15 @@ export const axiosBaseQuery =
             } catch (err) {
                 const error = err as AxiosError
 
-                if (error.response?.status === 401) {
+                const reqUrl = (error.config?.url ?? "").toLowerCase()
+                const isAuthAnonymousRequest =
+                    reqUrl.includes("/auth/login") ||
+                    reqUrl.includes("/auth/register") ||
+                    reqUrl.includes("/auth/forgot-password") ||
+                    reqUrl.includes("/auth/reset-password") ||
+                    reqUrl.includes("/auth/refresh")
+
+                if (error.response?.status === 401 && !isAuthAnonymousRequest) {
                     authLocalService.clearTokenData()
                 }
 

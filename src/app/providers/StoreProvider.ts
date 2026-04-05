@@ -2,18 +2,29 @@ import { configureStore } from '@reduxjs/toolkit'
 import {api} from "../../shared/lib";
 import "@/modules/tasks/api/tasksApi";
 import "@/modules/taskComments/api/taskCommentsApi";
+import "@/modules/projects/api/projectsApi";
+import "@/modules/knowledge/api/knowledgeApi";
+import "@/modules/search/api/searchApi";
+import "@/modules/analytics/api/analyticsApi";
+import "@/modules/organization/api/organizationApi";
+import "@/modules/admin/api/adminApi";
 import signalRReducer from "@/modules/signalr/signalRSlice";
+import notificationsReducer from "@/modules/notifications/notificationsSlice";
 
 export const store = configureStore({
     reducer: {
         [api.reducerPath]: api.reducer,
         signalR: signalRReducer,
+        notifications: notificationsReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
-                // RTK Query кэш может хранить Blob (аватар) и другие несериализуемые значения
-                ignoredPaths: [`${api.reducerPath}.queries`, `${api.reducerPath}.mutations`],
+                ignoredPaths: [
+                    `${api.reducerPath}.queries`,
+                    `${api.reducerPath}.mutations`,
+                    "signalR",
+                ],
             },
         }).concat(api.middleware),
 })

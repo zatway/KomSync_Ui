@@ -162,10 +162,9 @@ export const tasksApi = api.injectEndpoints({
         }),
 
         deleteTaskComment: builder.mutation<void, DeleteTaskCommentRequest>({
-            query: (body) => ({
-                url: taskCommentsBase,
+            query: ({ id }) => ({
+                url: `${taskCommentsBase}/${id}`,
                 method: "DELETE",
-                data: body,
             }),
             invalidatesTags: ["Task"],
         }),

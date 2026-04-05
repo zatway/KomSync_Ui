@@ -1,10 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui_shadcn/card'
 import { Button } from '@/shared/ui_shadcn/button'
 import { Input } from '@/shared/ui_shadcn/input'
+import { Label } from '@/shared/ui_shadcn/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui_shadcn/select'
 import { useApproveRegistrationMutation, useGetAdminUsersQuery, useGetPendingRegistrationsQuery, useRejectRegistrationMutation, useUpdateAdminUserMutation, useUpdateUserRoleMutation } from '@/modules/admin/api/adminApi'
+import { useAddedDepartmentsMutation, useAddedPositionsMutation, useGetDepartmentsQuery } from '@/modules/organization/api/organizationApi'
 import { UserRole } from '@/types/dto/enums/UserRole'
 import { useMemo, useState } from 'react'
+import { toast } from 'sonner'
+import { getApiErrorMessage } from '@/shared/lib'
 
 const AdminPage = () => {
     const { data: registrations = [], isLoading: regLoading } = useGetPendingRegistrationsQuery()
@@ -13,6 +17,12 @@ const AdminPage = () => {
     const [reject, { isLoading: rejecting }] = useRejectRegistrationMutation()
     const [updateRole, { isLoading: roleSaving }] = useUpdateUserRoleMutation()
     const [updateUser, { isLoading: userSaving }] = useUpdateAdminUserMutation()
+    const { data: departments = [] } = useGetDepartmentsQuery()
+    const [addDepartment, { isLoading: addingDep }] = useAddedDepartmentsMutation()
+    const [addPosition, { isLoading: addingPos }] = useAddedPositionsMutation()
+    const [newDepartmentName, setNewDepartmentName] = useState('')
+    const [newPositionName, setNewPositionName] = useState('')
+    const [positionDepartmentId, setPositionDepartmentId] = useState<string>('')
 
     const [q, setQ] = useState('')
     const [roleFilter, setRoleFilter] = useState<UserRole | 'all'>('all')
@@ -35,6 +45,78 @@ const AdminPage = () => {
     return (
         <div className='space-y-6'>
             <h1 className='text-2xl font-bold'>Админ-панель</h1>
+
+            <Card>
+                <CardHeader><CardTitle>Подразделения и должности</CardTitle></CardHeader>
+                <CardContent className='space-y-6'>
+                    <div className='space-y-2'>
+                        <Label htmlFor='new-dep'>Новое подразделение</Label>
+                        <div className='flex flex-col gap-2 sm:flex-row sm:items-end'>
+                            <Input
+                                id='new-dep'
+                                value={newDepartmentName}
+                                onChange={(e) => setNewDepartmentName(e.target.value)}
+                                placeholder='Название отдела'
+                            />
+                            <Button
+                                type='button'
+                                disabled={addingDep || !newDepartmentName.trim()}
+                                onClick={async () => {
+                                    try {
+                                        await addDepartment({ name: newDepartmentName.trim() }).unwrap()
+                                        setNewDepartmentName('')
+                                        toast.success('Подразделение добавлено')
+                                    } catch (e) {
+                                        toast.error(getApiErrorMessage(e))
+                                    }
+                                }}
+                            >
+                                Добавить
+                            </Button>
+                        </div>
+                    </div>
+                    <div className='space-y-2'>
+                        <Label>Новая должность</Label>
+                        <div className='flex flex-col gap-2 sm:flex-row sm:items-end'>
+                            <Select value={positionDepartmentId} onValueChange={setPositionDepartmentId}>
+                                <SelectTrigger className='w-full sm:w-[220px]'><SelectValue placeholder='Подразделение' /></SelectTrigger>
+                                <SelectContent>
+                                    {departments.map((d) => (
+                                        <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Input
+                                value={newPositionName}
+                                onChange={(e) => setNewPositionName(e.target.value)}
+                                placeholder='Название должности'
+                                className='flex-1'
+                            />
+                            <Button
+                                type='button'
+                                disabled={addingPos || !newPositionName.trim() || !positionDepartmentId}
+                                onClick={async () => {
+                                    try {
+                                        await addPosition({
+                                            name: newPositionName.trim(),
+                                            departmentId: positionDepartmentId,
+                                        }).unwrap()
+                                        setNewPositionName('')
+                                        toast.success('Должность добавлена')
+                                    } catch (e) {
+                                        toast.error(getApiErrorMessage(e))
+                                    }
+                                }}
+                            >
+                                Добавить
+                            </Button>
+                        </div>
+                    </div>
+                    <p className='text-xs text-muted-foreground'>
+                        Список отделов и должностей также используется при регистрации пользователей.
+                    </p>
+                </CardContent>
+            </Card>
 
             <Card>
                 <CardHeader><CardTitle>Заявки на регистрацию</CardTitle></CardHeader>

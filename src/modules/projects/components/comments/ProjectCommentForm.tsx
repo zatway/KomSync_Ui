@@ -1,15 +1,17 @@
 "use client";
 
-import {useForm} from "react-hook-form";
-import { useState } from "react";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {z} from "zod";
-import {Send} from "lucide-react";
-import {Button} from "@/shared/ui_shadcn/button";
-import {Textarea} from "@/shared/ui_shadcn/textarea";
-import {Form, FormControl, FormField, FormItem} from "@/shared/ui_shadcn/form";
-import {toast} from "sonner";
-import {useAddProjectCommentMutation} from "@/modules/projects/api/projectsApi";
+import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Send } from "lucide-react";
+import { Button } from "@/shared/ui_shadcn/button";
+import { Textarea } from "@/shared/ui_shadcn/textarea";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/shared/ui_shadcn/form";
+import { toast } from "sonner";
+import { getApiErrorMessage } from "@/shared/lib";
+import { FilePickerButton } from "@/shared/ui/FilePickerButton";
+import { useAddProjectCommentMutation } from "@/modules/projects/api/projectsApi";
 import { useGetProjectByIdQuery, useUploadProjectCommentAttachmentsMutation } from "@/modules/projects/api/projectsApi";
 
 const commentSchema = z.object({
@@ -34,8 +36,16 @@ export function ProjectCommentForm({projectId, parentId, onSuccess, initialValue
 
     const form = useForm<FormValues>({
         resolver: zodResolver(commentSchema),
-        defaultValues: {content: ""},
+        defaultValues: { content: initialValues ?? "" },
+        mode: "onChange",
+        reValidateMode: "onChange",
     });
+
+    useEffect(() => {
+        if (initialValues !== undefined) {
+            form.reset({ content: initialValues });
+        }
+    }, [initialValues, form]);
 
     const onSubmit = async (values: FormValues) => {
         try {
@@ -62,7 +72,7 @@ export function ProjectCommentForm({projectId, parentId, onSuccess, initialValue
             toast.success(parentId ? "Ответ добавлен" : "Комментарий добавлен");
             onSuccess?.();
         } catch (err) {
-            toast.error("Не удалось добавить комментарий");
+            toast.error(getApiErrorMessage(err));
         }
     };
 
@@ -86,12 +96,23 @@ export function ProjectCommentForm({projectId, parentId, onSuccess, initialValue
                         ))}
                     </div>
                 ) : null}
-                <input type="file" multiple onChange={(e) => setFiles(Array.from(e.target.files ?? []))} />
+                <div className="flex flex-wrap items-center gap-2">
+                    <FilePickerButton
+                        multiple
+                        disabled={isLoading || uploading}
+                        onFiles={setFiles}
+                        label="Прикрепить файлы"
+                    />
+                    {files.length > 0 && (
+                        <span className="text-xs text-muted-foreground">
+                            {files.map((f) => f.name).join(", ")}
+                        </span>
+                    )}
+                </div>
                 <FormField
                     control={form.control}
                     name="content"
-                    defaultValue={initialValues}
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormControl>
                                 <Textarea
@@ -100,6 +121,7 @@ export function ProjectCommentForm({projectId, parentId, onSuccess, initialValue
                                     {...field}
                                 />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />

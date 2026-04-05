@@ -3,6 +3,7 @@ import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } fro
 import { getSignalRNotificationsHubUrl } from "@/env";
 import signalRHandlerRegistry, { SignalRMessage } from "./signalRHandlerRegistryService";
 import { authLocalService } from "@/shared/lib";
+import { receiveFromSignalR } from "@/modules/notifications/notificationsSlice";
 
 const MAX_RECONNECT_ATTEMPTS = 10;
 const RECONNECT_DELAY_MS = 5000;
@@ -67,13 +68,13 @@ export const connectToSignalR = createAsyncThunk(
         connection.on("notification", (message: SignalRMessage) => {
             if (!message?.topic) return;
             signalRHandlerRegistry.dispatch(message);
+            dispatch(receiveFromSignalR(message));
         });
 
         try {
             await connection.start();
             dispatch(setConnected(true));
             dispatch(resetReconnectAttempts());
-            return connection;
         } catch (error) {
             dispatch(setConnected(false));
             return rejectWithValue(`Ошибка подключения к SignalR: ${String(error)}`);

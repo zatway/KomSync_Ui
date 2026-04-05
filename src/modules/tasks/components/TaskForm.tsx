@@ -3,7 +3,13 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format, isValid, parse } from "date-fns";
+import { ru } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
 import { Button } from "@/shared/ui_shadcn/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui_shadcn/popover";
+import { Calendar } from "@/shared/ui_shadcn/calendar";
+import { cn } from "@/shared/lib/ui_shadcn/utils";
 import {
     Form,
     FormControl,
@@ -65,6 +71,8 @@ export function TaskForm({
 
     const form = useForm<TaskFormValues>({
         resolver: zodResolver(schema),
+        mode: "onChange",
+        reValidateMode: "onChange",
         defaultValues: {
             title: "",
             description: "",
@@ -168,15 +176,60 @@ export function TaskForm({
                 <FormField
                     control={form.control}
                     name="deadline"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Срок (дата)</FormLabel>
-                            <FormControl>
-                                <Input type="date" {...field} value={field.value ?? ""} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+                    render={({ field }) => {
+                        const parsed = field.value
+                            ? parse(field.value, "yyyy-MM-dd", new Date())
+                            : undefined;
+                        const dateVal = parsed && isValid(parsed) ? parsed : undefined;
+                        return (
+                            <FormItem className="flex flex-col">
+                                <FormLabel>Срок (дата)</FormLabel>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                className={cn(
+                                                    "w-full justify-start text-left font-normal",
+                                                    !field.value && "text-muted-foreground",
+                                                )}
+                                            >
+                                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                                {dateVal
+                                                    ? format(dateVal, "d MMMM yyyy", { locale: ru })
+                                                    : "Выберите дату"}
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            locale={ru}
+                                            selected={dateVal}
+                                            onSelect={(d) =>
+                                                field.onChange(d ? format(d, "yyyy-MM-dd") : "")
+                                            }
+                                        />
+                                        {field.value ? (
+                                            <div className="border-t p-2">
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="w-full"
+                                                    onClick={() => field.onChange("")}
+                                                >
+                                                    Сбросить срок
+                                                </Button>
+                                            </div>
+                                        ) : null}
+                                    </PopoverContent>
+                                </Popover>
+                                <FormMessage />
+                            </FormItem>
+                        );
+                    }}
                 />
 
                 <FormField
@@ -267,7 +320,10 @@ export function TaskForm({
                     )}
                 />
 
-                <Button type="submit" disabled={isLoading || !sortedColumns.length}>
+                <Button
+                    type="submit"
+                    disabled={isLoading || !sortedColumns.length || !form.formState.isValid}
+                >
                     {submitLabel}
                 </Button>
             </form>

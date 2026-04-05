@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
     ColumnDef,
     flexRender,
@@ -24,13 +24,18 @@ import {
 import { Button } from "@/shared/ui_shadcn/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui_shadcn/avatar";
 import { Progress } from "@/shared/ui_shadcn/progress";
+import { Label } from "@/shared/ui_shadcn/label";
+import { Checkbox } from "@/shared/ui_shadcn/checkbox";
 import {useDeleteProjectMutation, useGetProjectsQuery} from "@/modules/projects/api/projectsApi";
 import { ProjectBriefDto } from "@/types/dto/projects/ProjectBriefDto";
 import { useNavigate } from "react-router-dom";
 import { AppRoutes } from "@/app/routes/AppRoutes";
 
 export function ProjectsTable() {
-    const { data: projects, isLoading } = useGetProjectsQuery();
+    const [showArchived, setShowArchived] = useState(false);
+    const { data: projects, isLoading } = useGetProjectsQuery(
+        showArchived ? { includeArchived: true } : undefined,
+    );
     const [deleteProject] = useDeleteProjectMutation();
     const navigate = useNavigate();
 
@@ -179,7 +184,18 @@ export function ProjectsTable() {
     }
 
     return (
-        <div className="overflow-x-auto">
+        <>
+            <div className="mb-4 flex items-center gap-2 px-2">
+                <Checkbox
+                    id="show-archived-projects"
+                    checked={showArchived}
+                    onCheckedChange={(v) => setShowArchived(v === true)}
+                />
+                <Label htmlFor="show-archived-projects" className="text-sm font-normal cursor-pointer">
+                    Показать архивные проекты
+                </Label>
+            </div>
+            <div className="overflow-x-auto">
             <Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -218,6 +234,7 @@ export function ProjectsTable() {
                     )}
                 </TableBody>
             </Table>
-        </div>
+            </div>
+        </>
     );
 }

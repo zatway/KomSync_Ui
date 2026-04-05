@@ -8,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { useLogoutMutation } from '@/modules/auth/api/authApi'
 import { cn } from '@/shared/lib/ui_shadcn/utils'
 import { sidebarItems } from '@/widgets/sidebar/SidebarItems'
-import AccordionProjectsItem from '@/modules/projects/components/AccordionProjectsItem'
+import { AccordionProjectsItem } from '@/modules/projects'
 import { authLocalService } from '@/shared/lib'
 import { UserRole } from '@/types/dto/enums/UserRole'
 

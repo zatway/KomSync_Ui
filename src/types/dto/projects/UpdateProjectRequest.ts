@@ -7,4 +7,5 @@ export interface UpdateProjectRequest {
     color?: string | null;
     icon?: string | null;
     tags?: string[];
+    isArchived?: boolean | null;
 }

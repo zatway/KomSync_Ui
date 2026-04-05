@@ -56,6 +56,15 @@ export interface ProjectDetailedDto {
 
     // Метаданные
     isFavorite?: boolean;          // для текущего пользователя
+    isArchived?: boolean;
+    projectAttachments?: Array<{
+        id: string;
+        fileName: string;
+        contentType?: string | null;
+        sizeBytes: number;
+        downloadUrl: string;
+        createdAt: string;
+    }>;
     permissions: {
         canEdit: boolean;
         canDelete: boolean;

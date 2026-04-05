@@ -3,11 +3,13 @@ import {usePositions} from "@/modules/organization/hooks/usePositions";
 
 interface PositionSelectProps {
     selectedPositionId?: string;
+    /** Фильтр должностей по подразделению (регистрация и формы). */
+    departmentId?: string;
     onChange: (selectedPositionId?: string) => void;
 }
 
-const PositionSelect: FC<PositionSelectProps> = ({selectedPositionId, onChange}) => {
-    const {data: positions, isLoading, isError} = usePositions();
+const PositionSelect: FC<PositionSelectProps> = ({ selectedPositionId, departmentId, onChange }) => {
+    const { data: positions, isLoading, isError } = usePositions(departmentId);
 
     return (
         <select

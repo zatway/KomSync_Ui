@@ -4,10 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useGetMeAvatarQuery, useGetMeInfoQuery, useUpdateProfileMutation } from "@/modules/profile/api/profileApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui_shadcn/card";
 import { Button } from "@/shared/ui_shadcn/button";
-import { Input } from "@/shared/ui_shadcn/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui_shadcn/avatar";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/shared/lib";
+import { FilePickerButton } from "@/shared/ui/FilePickerButton";
 
 export default function ProfilePage() {
     const { data: user } = useGetMeInfoQuery();
@@ -68,11 +68,11 @@ export default function ProfilePage() {
 
                     <div className="space-y-3">
                         <div className="flex items-center gap-3">
-                            <Input
-                                type="file"
+                            <FilePickerButton
                                 accept="image/*"
                                 disabled={isLoading}
-                                onChange={(e) => void onPickAvatar(e.target.files?.[0] ?? null)}
+                                label="Выбрать изображение"
+                                onFiles={(f) => void onPickAvatar(f[0] ?? null)}
                             />
                         </div>
                         <div className="flex items-center gap-2">

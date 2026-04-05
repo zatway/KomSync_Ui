@@ -7,4 +7,12 @@ export interface TaskDetailedDto extends TaskShortDto {
     comments: TaskCommentDto[];
     history: TaskHistoryDto[];
     watchers: Array<{ id: string; name: string; avatarUrl?: string | null }>;
+    fileAttachments?: Array<{
+        id: string;
+        fileName: string;
+        contentType?: string | null;
+        sizeBytes: number;
+        downloadUrl: string;
+        createdAt: string;
+    }>;
 }

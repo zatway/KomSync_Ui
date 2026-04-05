@@ -1,4 +1,4 @@
-﻿import { AddTaskCommentRequest } from '@/types/dto/taskComments/AddTaskCommentRequest'
+import { AddTaskCommentRequest } from '@/types/dto/taskComments/AddTaskCommentRequest'
 import { UpdateTaskCommentRequest } from '@/types/dto/taskComments/UpdateTaskCommentRequest'
 import { DeleteTaskCommentRequest } from '@/types/dto/taskComments/DeleteTaskCommentRequest'
 import { api } from '@/shared/lib'
@@ -15,7 +15,7 @@ export const taskCommentsApi = api.injectEndpoints({
             invalidatesTags: ['Task'],
         }),
         deleteComment: builder.mutation<boolean, DeleteTaskCommentRequest>({
-            query: (data) => ({ url: env.API_TASK_COMMENTS_PATH, method: 'DELETE', data }),
+            query: ({ id }) => ({ url: `${env.API_TASK_COMMENTS_PATH}/${id}`, method: 'DELETE' }),
             invalidatesTags: ['Task'],
         }),
     }),

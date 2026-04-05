@@ -1,5 +1,5 @@
-import {useGetPositionQuery} from "../api/organizationApi";
+import { useGetPositionsQuery } from "../api/organizationApi";
 
-export const usePositions = () => {
-    return useGetPositionQuery();
+export const usePositions = (departmentId?: string) => {
+    return useGetPositionsQuery(departmentId);
 };

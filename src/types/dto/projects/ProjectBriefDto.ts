@@ -23,4 +23,6 @@ export interface ProjectBriefDto {
     // Для визуального отличия в списке/сайдбаре
     color?: string;                // #HEX или hsl() — цвет метки/иконки проекта
     icon?: string;                 // emoji или путь к иконке (опционально)
+
+    isArchived?: boolean;
 }

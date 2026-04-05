@@ -85,7 +85,8 @@ export default function ProjectForm({
 
     const form = useForm<ProjectFormValues>({
         resolver: zodResolver(projectCreateSchema),
-        mode: "onTouched",
+        mode: "onChange",
+        reValidateMode: "onChange",
         defaultValues: {
             name: "",
             departmentId: "",

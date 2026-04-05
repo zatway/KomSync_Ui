@@ -11,8 +11,10 @@ import {
 import {useGetProjectByIdQuery} from "@/modules/projects/api/projectsApi";
 import {AlertCircle} from "lucide-react";
 import {Button} from "@/shared/ui_shadcn/button";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {AppRoutes} from "@/app/routes/AppRoutes";
+import {Card, CardContent, CardHeader, CardTitle} from "@/shared/ui_shadcn/card";
+import {BookOpen} from "lucide-react";
 
 export default function ProjectDetailPage() {
     const {projectId} = useParams<{ projectId: string }>();
@@ -52,6 +54,25 @@ export default function ProjectDetailPage() {
                 </div>
 
                 <div className="space-y-8">
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <BookOpen className="h-4 w-4" />
+                                База знаний
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-sm text-muted-foreground">
+                            <p className="mb-3">
+                                Статьи и заметки, привязанные к этому проекту.
+                            </p>
+                            <Link
+                                to={`${AppRoutes.KNOWLEDGE}?projectId=${project.id}`}
+                                className="font-medium text-primary underline underline-offset-2 hover:no-underline"
+                            >
+                                Открыть документацию проекта
+                            </Link>
+                        </CardContent>
+                    </Card>
                     <ProjectTeam project={project}/>
                     <ProjectTimeline project={project}/>
                 </div>

@@ -18,6 +18,7 @@ export const api = createApi({
         'ProjectComments',
         'TaskStatusColumns',
         'Admin',
+        'Knowledge',
     ],
     endpoints: () => ({}),
 })

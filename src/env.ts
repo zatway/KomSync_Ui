@@ -31,6 +31,11 @@ export const env: Env = {
     ROUTE_PROJECT_CREATE: "/projects/create",
     ROUTE_TASKS: "/tasks",
     ROUTE_KNOWLEDGE: "/knowledge",
+    ROUTE_KNOWLEDGE_ARTICLE: "/knowledge/:slug",
+    ROUTE_SEARCH: "/search",
+    ROUTE_ANALYTICS: "/analytics",
+    ROUTE_FORGOT_PASSWORD: "/forgot-password",
+    ROUTE_RESET_PASSWORD: "/reset-password",
     ROUTE_ADMIN: "/admin",
     ROUTE_PROFILE: "/profile",
 

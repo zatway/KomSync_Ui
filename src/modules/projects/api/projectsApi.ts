@@ -15,9 +15,9 @@ const getUrl = (endUrl: string) => `${env.API_PROJECTS_PATH}${endUrl}`;
 
 export const projectsApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getProjects: builder.query<ProjectBriefDto[], void>({
-            query: () => ({
-                url: getUrl(""),
+        getProjects: builder.query<ProjectBriefDto[], { includeArchived?: boolean } | void>({
+            query: (arg) => ({
+                url: getUrl(arg?.includeArchived ? "?includeArchived=true" : ""),
                 method: "GET",
             }),
             providesTags: (result) =>
@@ -144,6 +144,20 @@ export const projectsApi = api.injectEndpoints({
             }),
             invalidatesTags: ["ProjectComment"],
         }),
+
+        deleteProjectComment: builder.mutation<
+            void,
+            { commentId: string; projectId: string }
+        >({
+            query: ({ commentId }) => ({
+                url: getUrl(`${env.PROJECT_COMMENT_BY_ID_PREFIX}/${commentId}`),
+                method: "DELETE",
+            }),
+            invalidatesTags: (_, __, { projectId }) => [
+                { type: "ProjectComment", id: projectId },
+                { type: "Project", id: projectId },
+            ],
+        }),
     }),
     overrideExisting: false,
 });
@@ -161,4 +175,5 @@ export const {
     useAddProjectCommentMutation,
     useUploadProjectCommentAttachmentsMutation,
     useUpdateProjectCommentMutation,
+    useDeleteProjectCommentMutation,
 } = projectsApi;

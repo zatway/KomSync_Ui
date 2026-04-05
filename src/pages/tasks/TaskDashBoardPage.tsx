@@ -10,7 +10,7 @@ export default function TaskDashboardPage() {
 
     return (
         <div className="min-h-screen bg-background">
-            <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8 h-full">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-8">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Задачи проекта</h1>

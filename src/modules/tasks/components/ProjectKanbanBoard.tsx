@@ -157,7 +157,7 @@ export default function ProjectKanbanBoard({ projectId }: ProjectKanbanBoardProp
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 h-screen">
             <div className="flex flex-col sm:flex-row flex-wrap justify-end gap-2 items-stretch sm:items-center">
                 <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center mr-auto w-full sm:w-auto">
                     <Input
@@ -202,7 +202,7 @@ export default function ProjectKanbanBoard({ projectId }: ProjectKanbanBoardProp
                 <div
                     className={cn(
                         "flex gap-4 sm:gap-6 overflow-x-auto pb-8 -mx-2 px-2 sm:mx-0 sm:px-0",
-                        "snap-x snap-mandatory sm:snap-none"
+                        "snap-x snap-mandatory sm:snap-none h-full"
                     )}
                 >
                     {sortedColumns.map((column: TaskStatusColumnDto) => (
@@ -239,7 +239,7 @@ function KanbanColumn({
             ref={setNodeRef}
             className={cn(
                 "snap-start shrink-0 w-[min(100vw-2rem,340px)] sm:w-[340px] bg-muted/40 rounded-xl p-3 sm:p-4 flex flex-col border border-border/40",
-                isOver && "ring-2 ring-primary/30"
+                isOver && "ring-2 ring-primary/30 h-full"
             )}
         >
             <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center justify-between gap-2">

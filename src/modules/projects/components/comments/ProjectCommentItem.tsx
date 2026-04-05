@@ -1,14 +1,18 @@
 "use client";
 
-import {useState} from "react";
-import {format, parseISO} from "date-fns";
-import {ru} from "date-fns/locale";
-import {Trash2, Reply, Edit} from "lucide-react";
-import {Avatar, AvatarFallback, AvatarImage} from "@/shared/ui_shadcn/avatar";
-import {Button} from "@/shared/ui_shadcn/button";
-import {ProjectCommentForm} from "@/modules/projects";
-import {ProjectCommentDto} from "@/types/dto/projectComments/ProjectCommentDto";
-import {cn} from "@/shared/lib/ui_shadcn/utils";
+import { useState } from "react";
+import { format, parseISO } from "date-fns";
+import { ru } from "date-fns/locale";
+import { Trash2, Reply, Edit } from "lucide-react";
+import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui_shadcn/avatar";
+import { Button } from "@/shared/ui_shadcn/button";
+import { ProjectCommentForm } from "@/modules/projects";
+import { ProjectCommentDto } from "@/types/dto/projectComments/ProjectCommentDto";
+import { cn } from "@/shared/lib/ui_shadcn/utils";
+import { useDeleteProjectCommentMutation } from "@/modules/projects/api/projectsApi";
+import { getApiErrorMessage } from "@/shared/lib";
+import { toAbsoluteApiUrl } from "@/shared/lib/absoluteApiUrl";
 
 interface Props {
     comment: ProjectCommentDto;
@@ -16,9 +20,20 @@ interface Props {
     level: number;
 }
 
-export function ProjectCommentItem({comment, projectId, level}: Props) {
+export function ProjectCommentItem({ comment, projectId, level }: Props) {
     const [isReplying, setIsReplying] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [deleteComment, { isLoading: deleting }] = useDeleteProjectCommentMutation();
+
+    const handleDelete = async () => {
+        if (!confirm("Удалить комментарий и ответы к нему?")) return;
+        try {
+            await deleteComment({ commentId: comment.id, projectId }).unwrap();
+            toast.success("Комментарий удалён");
+        } catch (e) {
+            toast.error(getApiErrorMessage(e));
+        }
+    };
 
     return (
         <div className={cn("flex gap-4", level > 0 && "ml-10 border-l-2 border-muted pl-6")}>
@@ -54,7 +69,7 @@ export function ProjectCommentItem({comment, projectId, level}: Props) {
                         {comment.attachments.map((a) => (
                             <a
                                 key={a.id}
-                                href={a.downloadUrl}
+                                href={toAbsoluteApiUrl(a.downloadUrl)}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="text-xs text-primary underline underline-offset-2 w-fit"
@@ -86,8 +101,14 @@ export function ProjectCommentItem({comment, projectId, level}: Props) {
                         Редактировать
                     </Button>
 
-                    <Button variant="ghost" size="sm" className="h-8 px-2 text-xs text-destructive">
-                        <Trash2 className="mr-1 h-3.5 w-3.5"/>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-2 text-xs text-destructive"
+                        disabled={deleting}
+                        onClick={() => void handleDelete()}
+                    >
+                        <Trash2 className="mr-1 h-3.5 w-3.5" />
                         Удалить
                     </Button>
                 </div>

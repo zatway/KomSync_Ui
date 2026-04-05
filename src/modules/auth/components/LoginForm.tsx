@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "@/modules/auth/api/authApi";
 import { Button } from "@/shared/ui_shadcn/button";
 import { Logo } from "@/shared/ui/Logo/Logo";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppRoutes } from "@/app/routes/AppRoutes";
 import {
     Form,
@@ -32,7 +32,8 @@ const LoginForm = () => {
     const form = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: { email: "", password: "" },
-        mode: "onTouched",
+        mode: "onChange",
+        reValidateMode: "onChange",
     });
 
     const handleSubmit = async (values: LoginValues) => {
@@ -43,7 +44,7 @@ const LoginForm = () => {
             }).unwrap();
             navigate(AppRoutes.PROJECTS);
         } catch (e) {
-            toast.error(getApiErrorMessage(e));
+            toast.error(getApiErrorMessage(e, { authContext: true }));
         }
     };
 
@@ -85,9 +86,19 @@ const LoginForm = () => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" disabled={isLoading} className="w-full mt-2">
+                    <Button
+                        type="submit"
+                        disabled={isLoading || !form.formState.isValid}
+                        className="w-full mt-2"
+                    >
                         {isLoading ? "Вход…" : "Войти"}
                     </Button>
+                    <Link
+                        to={AppRoutes.FORGOT_PASSWORD}
+                        className="text-center text-sm text-muted-foreground hover:underline"
+                    >
+                        Забыли пароль?
+                    </Link>
                     <button
                         type="button"
                         className="text-sm text-muted-foreground hover:underline text-center"
