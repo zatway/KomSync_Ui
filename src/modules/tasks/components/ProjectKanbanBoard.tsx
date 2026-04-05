@@ -157,7 +157,7 @@ export default function ProjectKanbanBoard({ projectId }: ProjectKanbanBoardProp
     };
 
     return (
-        <div className="space-y-4 h-screen">
+        <div className="space-y-4 min-h-0">
             <div className="flex flex-col sm:flex-row flex-wrap justify-end gap-2 items-stretch sm:items-center">
                 <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center mr-auto w-full sm:w-auto">
                     <Input
@@ -170,7 +170,8 @@ export default function ProjectKanbanBoard({ projectId }: ProjectKanbanBoardProp
                         type="button"
                         variant="secondary"
                         onClick={handleAddColumn}
-                        disabled={creatingCol || !newColName.trim()}
+                        disabled={creatingCol || !newColName.trim() || sortedColumns.length >= 10}
+                        title={sortedColumns.length >= 10 ? "Не более 10 колонок" : undefined}
                     >
                         Добавить колонку
                     </Button>
@@ -202,7 +203,7 @@ export default function ProjectKanbanBoard({ projectId }: ProjectKanbanBoardProp
                 <div
                     className={cn(
                         "flex gap-4 sm:gap-6 overflow-x-auto pb-8 -mx-2 px-2 sm:mx-0 sm:px-0",
-                        "snap-x snap-mandatory sm:snap-none h-full"
+                        "snap-x snap-mandatory sm:snap-none min-h-0"
                     )}
                 >
                     {sortedColumns.map((column: TaskStatusColumnDto) => (
@@ -250,7 +251,7 @@ function KanbanColumn({
             </h2>
 
             <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-                <div className="flex flex-col gap-2 sm:gap-3 min-h-[120px] sm:min-h-[200px] flex-1">
+                <div className="flex flex-col gap-2 sm:gap-3 flex-1 min-h-0">
                     {tasks.map((task) => (
                         <TaskCard key={task.id} task={task} projectId={projectId} />
                     ))}

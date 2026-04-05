@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, Search, Shield } from "lucide-react";
+import { BarChart3, BookOpen, Shield } from "lucide-react";
 import { AppRoutes } from "@/app/routes/AppRoutes";
 import type { LucideIcon } from "lucide-react";
 
@@ -15,11 +15,6 @@ export const sidebarItems: SidebarItem[] = [
         label: "База знаний",
         icon: BookOpen,
         path: AppRoutes.KNOWLEDGE,
-    },
-    {
-        label: "Поиск",
-        icon: Search,
-        path: AppRoutes.SEARCH,
     },
     {
         label: "Аналитика",

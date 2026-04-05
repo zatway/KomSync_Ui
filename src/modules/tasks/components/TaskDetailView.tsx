@@ -316,9 +316,6 @@ export function TaskDetailView() {
                             </li>
                         ))}
                     </ul>
-                    <ul className="space-y-3">
-                        <TaskHistory history={task.history} />
-                    </ul>
                 </CardContent>
             </Card>
             <Card>

@@ -26,8 +26,8 @@ let manualDisconnect = false;
 export const connectToSignalR = createAsyncThunk(
     "signalR/connect",
     async (_, { dispatch, rejectWithValue }) => {
-        if (connection?.state === HubConnectionState.Connected) return connection;
-        if (connection && connection.state !== HubConnectionState.Disconnected) return connection;
+        if (connection?.state === HubConnectionState.Connected) return;
+        if (connection && connection.state !== HubConnectionState.Disconnected) return;
 
         const token = authLocalService.getToken();
         if (!token) return rejectWithValue("Отсутствует токен для SignalR");

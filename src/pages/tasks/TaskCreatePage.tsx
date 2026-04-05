@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
+import { useMemo } from 'react'
 import { useGetProjectByIdQuery, useGetProjectTaskStatusColumnsQuery } from '@/modules/projects/api/projectsApi'
 import { useCreateTaskMutation } from '@/modules/tasks/api/tasksApi'
 import { TaskForm, type TaskFormValues } from '@/modules/tasks'
@@ -16,7 +17,22 @@ export default function TaskCreatePage() {
     const { data: statusColumns = [] } = useGetProjectTaskStatusColumnsQuery(projectId!, { skip: !projectId })
     const [createTask, { isLoading }] = useCreateTaskMutation()
 
-    const members = project?.members?.map((m) => ({ id: m.id, name: m.name })) ?? []
+    const members = useMemo(() => {
+        if (!project) return []
+        const out: { id: string; name: string }[] = []
+        const seen = new Set<string>()
+        if (project.owner) {
+            out.push({ id: project.owner.id, name: project.owner.name })
+            seen.add(project.owner.id)
+        }
+        for (const m of project.members ?? []) {
+            if (!seen.has(m.id)) {
+                out.push({ id: m.id, name: m.name })
+                seen.add(m.id)
+            }
+        }
+        return out
+    }, [project])
 
     const onSubmit = async (values: TaskFormValues) => {
         if (!projectId) return
@@ -45,7 +61,12 @@ export default function TaskCreatePage() {
         <div className='container mx-auto py-8 px-4 max-w-3xl'>
             <Button variant='ghost' className='mb-6' onClick={() => navigate(-1)}><ArrowLeft className='mr-2 h-4 w-4' />Назад</Button>
             <h1 className='text-2xl font-bold mb-6'>Новая задача</h1>
-            {project && (
+            {project && !statusColumns.length && (
+                <p className="mb-6 rounded-md border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
+                    Сначала добавьте хотя бы одну колонку статуса на доске проекта, затем создайте задачу.
+                </p>
+            )}
+            {project && statusColumns.length > 0 && (
                 <TaskForm
                     statusColumns={statusColumns}
                     members={members}

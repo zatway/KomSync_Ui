@@ -25,8 +25,6 @@ const KnowledgePage = lazy(() => import("@/pages/knowledge/KnowledgePage"));
 const TaskDetailPage = lazy(() => import("@/pages/tasks/TaskDetailPage"));
 const AdminPage = lazy(() => import("@/pages/admin/AdminPage"));
 const AnalyticsPage = lazy(() => import("@/pages/analytics/AnalyticsPage"));
-const SearchPage = lazy(() => import("@/pages/search/SearchPage"));
-
 const routeFallback = (
     <div className="flex min-h-[40vh] items-center justify-center p-8 text-muted-foreground">Загрузка…</div>
 );
@@ -62,7 +60,7 @@ export const AppRouter = () => (
 
                         <Route path={AppRoutes.KNOWLEDGE} element={<KnowledgePage />} />
                         <Route path={AppRoutes.KNOWLEDGE_ARTICLE} element={<KnowledgePage />} />
-                        <Route path={AppRoutes.SEARCH} element={<SearchPage />} />
+                        <Route path={AppRoutes.SEARCH} element={<Navigate to={AppRoutes.PROJECTS} replace />} />
                         <Route path={AppRoutes.ANALYTICS} element={<AnalyticsPage />} />
                         <Route path={AppRoutes.PROFILE} element={<ProfilePage />} />
                         <Route element={<RoleRoute role={UserRole.Admin} />}>

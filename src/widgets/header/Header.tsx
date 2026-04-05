@@ -11,6 +11,7 @@ import { AppRoutes } from "@/app/routes/AppRoutes";
 import { Button } from "@/shared/ui_shadcn/button";
 import { Menu } from "lucide-react";
 import { NotificationsBell } from "@/widgets/header/NotificationsBell";
+import { HeaderQuickSearches } from "@/widgets/header/HeaderQuickSearches";
 
 type Props = {
     onOpenMobileNav?: () => void;
@@ -22,7 +23,7 @@ const Header = ({ onOpenMobileNav }: Props) => {
 
     return (
         <header className="h-14 sm:h-16 border-b bg-background flex items-center justify-between px-4 sm:px-6 shrink-0 gap-2">
-            <div className="flex items-center gap-2 min-w-0">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
                 <Button
                     type="button"
                     variant="ghost"
@@ -33,6 +34,7 @@ const Header = ({ onOpenMobileNav }: Props) => {
                 >
                     <Menu className="h-5 w-5" />
                 </Button>
+                <HeaderQuickSearches />
             </div>
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                 <NotificationsBell />

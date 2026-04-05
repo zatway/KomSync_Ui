@@ -1,74 +1,196 @@
+import { useMemo, useState } from "react";
 import { env } from "@/env";
 import { useGetAnalyticsDashboardQuery } from "@/modules/analytics/api/analyticsApi";
+import { useGetProjectsQuery } from "@/modules/projects/api/projectsApi";
 import { Button } from "@/shared/ui_shadcn/button";
-import {authLocalService, hasValue} from "@/shared/lib";
-import {toast} from "sonner";
+import { authLocalService, hasValue } from "@/shared/lib";
+import { toast } from "sonner";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/shared/ui_shadcn/select";
+
+function BarChart({
+    rows,
+    valueKey,
+    labelKey,
+}: {
+    rows: Array<Record<string, string | number>>;
+    valueKey: string;
+    labelKey: string;
+}) {
+    const max = Math.max(1, ...rows.map((r) => Number(r[valueKey]) || 0));
+    return (
+        <div className="space-y-3">
+            {rows.map((row, i) => {
+                const v = Number(row[valueKey]) || 0;
+                const pct = Math.round((v / max) * 100);
+                return (
+                    <div key={i} className="space-y-1">
+                        <div className="flex justify-between gap-2 text-sm">
+                            <span className="truncate text-foreground">{String(row[labelKey])}</span>
+                            <span className="shrink-0 tabular-nums text-muted-foreground">{v}</span>
+                        </div>
+                        <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
+                            <div
+                                className="h-full rounded-full bg-primary/80 transition-[width]"
+                                style={{ width: `${pct}%` }}
+                            />
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
 
 const AnalyticsPage = () => {
     const { data, isLoading, error } = useGetAnalyticsDashboardQuery();
+    const { data: projects = [] } = useGetProjectsQuery();
+    const [projectIdForExport, setProjectIdForExport] = useState<string>("");
+
+    const statusRows = useMemo(
+        () => data?.tasksByStatus.map((s) => ({ label: s.statusName, value: s.count })) ?? [],
+        [data?.tasksByStatus]
+    );
+    const assigneeRows = useMemo(
+        () => data?.topAssignees.map((u) => ({ label: u.fullName, value: u.activeTaskCount })) ?? [],
+        [data?.topAssignees]
+    );
 
     const exportOverdue = async () => {
         const bearer = authLocalService.getToken();
-        if(hasValue(bearer))
-        {
-            const res = await fetch(`${env.VITE_API_BASE_URL}/reports/tasks/overdue.csv`, {
-                headers: bearer ? { Authorization: `Bearer ${bearer}` } : {},
-            });
-            if (!res.ok) return;
-            const blob = await res.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "overdue-tasks.csv";
-            a.click();
-            URL.revokeObjectURL(url);
+        if (!hasValue(bearer)) {
+            toast.error("Нет авторизации");
+            return;
         }
-        else toast.error("Ошибка")
+        const res = await fetch(`${env.VITE_API_BASE_URL}/reports/tasks/overdue.csv`, {
+            headers: { Authorization: `Bearer ${bearer}` },
+        });
+        if (!res.ok) {
+            toast.error("Не удалось скачать отчёт");
+            return;
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "overdue-tasks.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+        toast.success("Файл сохранён");
+    };
+
+    const exportProjectTasks = async () => {
+        if (!projectIdForExport) {
+            toast.error("Выберите проект");
+            return;
+        }
+        const bearer = authLocalService.getToken();
+        if (!hasValue(bearer)) {
+            toast.error("Нет авторизации");
+            return;
+        }
+        const res = await fetch(`${env.VITE_API_BASE_URL}/reports/projects/${projectIdForExport}/tasks.csv`, {
+            headers: { Authorization: `Bearer ${bearer}` },
+        });
+        if (!res.ok) {
+            toast.error("Не удалось скачать отчёт");
+            return;
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `tasks-${projectIdForExport}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast.success("CSV сохранён (UTF‑8, Excel открывает через «Данные»)");
     };
 
     return (
-        <div className="mx-auto max-w-4xl space-y-6 p-4 md:p-8">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-                <h1 className="text-2xl font-semibold">Аналитика</h1>
-                <Button type="button" variant="outline" size="sm" onClick={exportOverdue}>
-                    CSV просроченных
-                </Button>
+        <div className="mx-auto max-w-5xl space-y-8 p-4 md:p-8">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-semibold">Аналитика и отчёты</h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Сводка по задачам, выгрузки CSV и наглядные диаграммы по данным дашборда.
+                    </p>
+                </div>
             </div>
-            {isLoading && <p>Загрузка…</p>}
-            {error && <p className="text-destructive">Не удалось загрузить данные</p>}
-            {data && (
-                <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-lg border bg-card p-4">
-                        <div className="text-sm text-muted-foreground">Открытых задач</div>
-                        <div className="text-3xl font-semibold">{data.openTasks}</div>
+
+            <section className="rounded-xl border bg-card p-4 md:p-6">
+                <h2 className="mb-4 text-lg font-medium">Выгрузки</h2>
+                <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
+                    <div className="flex flex-col gap-2">
+                        <span className="text-sm text-muted-foreground">Просроченные задачи</span>
+                        <Button type="button" variant="outline" size="sm" onClick={() => void exportOverdue()}>
+                            Скачать CSV
+                        </Button>
                     </div>
-                    <div className="rounded-lg border bg-card p-4">
-                        <div className="text-sm text-muted-foreground">Просрочено</div>
-                        <div className="text-3xl font-semibold text-destructive">{data.overdueTasks}</div>
-                    </div>
-                    <div className="rounded-lg border bg-card p-4 sm:col-span-2">
-                        <div className="mb-2 text-sm font-medium">По статусам</div>
-                        <ul className="space-y-1 text-sm">
-                            {data.tasksByStatus.map((s) => (
-                                <li key={s.statusName} className="flex justify-between gap-4">
-                                    <span>{s.statusName}</span>
-                                    <span className="text-muted-foreground">{s.count}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                    <div className="rounded-lg border bg-card p-4 sm:col-span-2">
-                        <div className="mb-2 text-sm font-medium">Загрузка исполнителей (активные задачи)</div>
-                        <ul className="space-y-1 text-sm">
-                            {data.topAssignees.map((u) => (
-                                <li key={u.userId} className="flex justify-between gap-4">
-                                    <span>{u.fullName}</span>
-                                    <span className="text-muted-foreground">{u.activeTaskCount}</span>
-                                </li>
-                            ))}
-                        </ul>
+                    <div className="flex min-w-[min(100%,280px)] flex-col gap-2 sm:max-w-sm">
+                        <span className="text-sm text-muted-foreground">Все задачи выбранного проекта</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <Select value={projectIdForExport} onValueChange={setProjectIdForExport}>
+                                <SelectTrigger className="w-full sm:w-[240px]">
+                                    <SelectValue placeholder="Проект…" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {projects.map((p) => (
+                                        <SelectItem key={p.id} value={p.id}>
+                                            {p.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => void exportProjectTasks()}
+                                disabled={!projectIdForExport}
+                            >
+                                CSV задач проекта
+                            </Button>
+                        </div>
                     </div>
                 </div>
+                <p className="mt-4 text-xs text-muted-foreground">
+                    Формат CSV — UTF‑8. Для Excel: «Данные» → «Из текста/CSV» или открыть через LibreOffice.
+                </p>
+            </section>
+
+            {isLoading && <p className="text-muted-foreground">Загрузка дашборда…</p>}
+            {error && <p className="text-destructive">Не удалось загрузить данные</p>}
+            {data && (
+                <>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="rounded-xl border bg-card p-5">
+                            <div className="text-sm text-muted-foreground">Открытых задач</div>
+                            <div className="mt-1 text-3xl font-semibold tabular-nums">{data.openTasks}</div>
+                        </div>
+                        <div className="rounded-xl border bg-card p-5">
+                            <div className="text-sm text-muted-foreground">Просрочено</div>
+                            <div className="mt-1 text-3xl font-semibold tabular-nums text-destructive">
+                                {data.overdueTasks}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid gap-6 lg:grid-cols-2">
+                        <div className="rounded-xl border bg-card p-5">
+                            <h3 className="mb-4 font-medium">Задачи по статусам</h3>
+                            <BarChart rows={statusRows} labelKey="label" valueKey="value" />
+                        </div>
+                        <div className="rounded-xl border bg-card p-5">
+                            <h3 className="mb-4 font-medium">Загрузка исполнителей</h3>
+                            <BarChart rows={assigneeRows} labelKey="label" valueKey="value" />
+                        </div>
+                    </div>
+                </>
             )}
         </div>
     );

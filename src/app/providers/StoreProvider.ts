@@ -8,7 +8,7 @@ import "@/modules/search/api/searchApi";
 import "@/modules/analytics/api/analyticsApi";
 import "@/modules/organization/api/organizationApi";
 import "@/modules/admin/api/adminApi";
-import signalRReducer from "@/modules/signalr/signalRSlice";
+import signalRReducer, { connectToSignalR } from "@/modules/signalr/signalRSlice";
 import notificationsReducer from "@/modules/notifications/notificationsSlice";
 
 export const store = configureStore({
@@ -20,6 +20,11 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
+                ignoredActions: [
+                    connectToSignalR.fulfilled.type,
+                    `${api.reducerPath}/executeQuery/fulfilled`,
+                    `${api.reducerPath}/executeMutation/fulfilled`,
+                ],
                 ignoredPaths: [
                     `${api.reducerPath}.queries`,
                     `${api.reducerPath}.mutations`,
