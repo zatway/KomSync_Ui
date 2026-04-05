@@ -64,6 +64,13 @@ export const adminApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Admin'],
         }),
+        deleteAdminUser: builder.mutation<void, { userId: string; }>({
+            query: ({ userId }) => ({
+                url: `${base}/users/${userId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Admin'],
+        }),
     }),
 })
 
@@ -74,5 +81,6 @@ export const {
     useRejectRegistrationMutation,
     useUpdateUserRoleMutation,
     useUpdateAdminUserMutation,
+    useDeleteAdminUserMutation,
 } = adminApi
 

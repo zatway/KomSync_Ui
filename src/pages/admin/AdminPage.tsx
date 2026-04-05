@@ -3,7 +3,15 @@ import { Button } from '@/shared/ui_shadcn/button'
 import { Input } from '@/shared/ui_shadcn/input'
 import { Label } from '@/shared/ui_shadcn/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui_shadcn/select'
-import { useApproveRegistrationMutation, useGetAdminUsersQuery, useGetPendingRegistrationsQuery, useRejectRegistrationMutation, useUpdateAdminUserMutation, useUpdateUserRoleMutation } from '@/modules/admin/api/adminApi'
+import {
+    useApproveRegistrationMutation,
+    useDeleteAdminUserMutation,
+    useGetAdminUsersQuery,
+    useGetPendingRegistrationsQuery,
+    useRejectRegistrationMutation,
+    useUpdateAdminUserMutation,
+    useUpdateUserRoleMutation
+} from '@/modules/admin/api/adminApi'
 import { useAddedDepartmentsMutation, useAddedPositionsMutation, useGetDepartmentsQuery } from '@/modules/organization/api/organizationApi'
 import { UserRole } from '@/types/dto/enums/UserRole'
 import { useMemo, useState } from 'react'
@@ -17,6 +25,7 @@ const AdminPage = () => {
     const [reject, { isLoading: rejecting }] = useRejectRegistrationMutation()
     const [updateRole, { isLoading: roleSaving }] = useUpdateUserRoleMutation()
     const [updateUser, { isLoading: userSaving }] = useUpdateAdminUserMutation()
+    const [deleteUser, { isLoading: userDeleting}] = useDeleteAdminUserMutation()
     const { data: departments = [] } = useGetDepartmentsQuery()
     const [addDepartment, { isLoading: addingDep }] = useAddedDepartmentsMutation()
     const [addPosition, { isLoading: addingPos }] = useAddedPositionsMutation()
@@ -175,12 +184,20 @@ const AdminPage = () => {
                                 <Button
                                     size='sm'
                                     variant={u.isApproved ? 'secondary' : 'default'}
-                                    disabled={userSaving}
+                                    disabled={userSaving || u.email === 'admin@komsync.local'}
                                     onClick={() => updateUser({ userId: u.id, data: { isApproved: !u.isApproved } })}
                                 >
                                     {u.isApproved ? 'Деактивировать' : 'Активировать'}
                                 </Button>
-                                <Select value={u.role} onValueChange={(role) => updateRole({ userId: u.id, role: role as UserRole })}>
+                                <Button
+                                    size='sm'
+                                    variant={'link'}
+                                    disabled={userDeleting || u.email === 'admin@komsync.local'}
+                                    onClick={() => deleteUser({ userId: u.id})}
+                                >
+                                    Удалить
+                                </Button>
+                                <Select value={u.role} disabled={u.email === 'admin@komsync.local'} onValueChange={(role) => updateRole({ userId: u.id, role: role as UserRole })}>
                                     <SelectTrigger className='w-[180px]'><SelectValue /></SelectTrigger>
                                     <SelectContent>
                                         {Object.values(UserRole).map((role) => <SelectItem key={role} value={role}>{role}</SelectItem>)}
@@ -191,6 +208,7 @@ const AdminPage = () => {
                     ))}
                     {roleSaving && <p className='text-xs text-muted-foreground'>Сохранение роли…</p>}
                     {userSaving && <p className='text-xs text-muted-foreground'>Сохранение пользователя…</p>}
+                    {userDeleting && <p className='text-xs text-muted-foreground'>Удаление пользователя…</p>}
                 </CardContent>
             </Card>
         </div>
